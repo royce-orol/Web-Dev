@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['first_name'] = $user['first_name'];
+            $_SESSION['last_name'] = $user['last_name'];
             $_SESSION['role'] = $user['role'];
             header("Location: dashboard.php");
             exit();
@@ -25,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $error = "User not found.";
     }
+    header("Location: login.php?error=" . urlencode($error));
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -41,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="title">FYP Management System</div>
         
         <!-- Login Form -->
-        <form action="login_process.php" method="post">
+        <form action="login.php" method="post">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
             

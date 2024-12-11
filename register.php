@@ -1,37 +1,68 @@
 <?php
+session_start();
 include('db_connection.php'); // Adjust the file path
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
+    $email = $_POST['email'];
     $student_id = $_POST['student_id'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-    $role = 'student'; // Default role for new users
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    // Check if the email or student_id already exists
-    $query = "SELECT * FROM users WHERE email = ? OR student_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $email, $student_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 0) {
-        $query = "INSERT INTO users (email, first_name, last_name, student_id, password, role, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssss", $email, $first_name, $last_name, $student_id, $password, $role);
-
-        if ($stmt->execute()) {
-            header("Location: login.php");
-            exit();
-        } else {
-            $error = "Error registering user.";
-        }
+    // Validation
+    if ($password !== $confirm_password) {
+        $error = "Passwords do not match.";
     } else {
-        $error = "Email or Student ID already exists.";
+        // Check if student ID already exists
+        $query = "SELECT * FROM users WHERE student_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $error = "Student ID is already registered.";
+        } else {
+            // Check if email already exists
+            $query = "SELECT * FROM users WHERE email = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $error = "Email is already registered.";
+            } else {
+                // Hash the password
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                // Insert user into the database
+                $insert_query = "INSERT INTO users (first_name, last_name, student_id, email, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($insert_query);
+                $role = 'student'; // Default role
+                $stmt->bind_param("ssssss", $first_name, $last_name, $student_id, $email, $hashed_password, $role);
+
+                if ($stmt->execute()) {
+                    $_SESSION['user_id'] = $conn->insert_id;
+                    $_SESSION['first_name'] = $first_name;
+                    $_SESSION['last_name'] = $last_name;
+                    $_SESSION['role'] = $role;
+                    header("Location: login.php");
+                    exit();
+                } else {
+                    $error = "Registration failed. Error: " . $stmt->error;
+                }
+            }
+        }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,28 +74,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container">
         <!-- Title -->
-        <div class="title">FYP Management System</div>
-        
+        <div class="title">FYP Management System - Register</div>
+
         <!-- Registration Form -->
-        <form action="register_process.php" method="post">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-            
+        <form action="register.php" method="post">
             <label for="first_name">First Name</label>
             <input type="text" id="first_name" name="first_name" required>
-            
+
             <label for="last_name">Last Name</label>
             <input type="text" id="last_name" name="last_name" required>
             
             <label for="student_id">Student ID</label>
             <input type="text" id="student_id" name="student_id" required>
-            
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            
+
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
             <button type="submit">Register</button>
-            
-            <p>Already have an account? <a href="login.php">Login here</a></p>
+
+            <?php if (isset($error)): ?>
+                <p class="error"><?php echo htmlspecialchars($error); ?></p>
+            <?php endif; ?>
+
+            <p>Already have an account? <a href="login.php">Log in here</a></p>
         </form>
     </div>
 </body>
