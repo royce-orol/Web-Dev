@@ -21,7 +21,7 @@ $announcements = [
     <link rel="stylesheet" href="css/dashboard.css">
 
 
-<?php include 'header.php'; ?>
+<?php include 'includes/header.php'; ?>
 <div class="dashboard-container">
     <div class="dashboard-sidebar">
         <h3>Features</h3>
