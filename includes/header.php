@@ -17,11 +17,26 @@ $role = ucfirst($_SESSION['role']); // Capitalize first letter
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYP Management System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
     <div class="navbar">
         <div class="welcome-message">
             <p>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></p>
         </div>
+        <div class="navbar-icons">
+            <a href="dashboard.php" title="Dashboard">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="search.php" title="Search">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="messages.php" title="Messages">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
     </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
