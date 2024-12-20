@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Retrieve user details from session
 $name = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
-$role = ucfirst($_SESSION['role']); // Capitalize first letter
+$role = $_SESSION['role']; // student, moderator, admin, supervisor
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +34,10 @@ $role = ucfirst($_SESSION['role']); // Capitalize first letter
             <a href="messages.php" title="Messages">
                 <i class="fas fa-envelope"></i>
             </a>
+        </div>
+        <div class=logout-button>
+            <a href="logout.php" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+
         </div>
     </div>
 </body>
