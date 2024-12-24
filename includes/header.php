@@ -37,7 +37,7 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
         </div>
         <div class=logout-button>
             <a href="log-out.php" onclick="return confirm('Are you sure you want to logout?')">
-            <img src="images/logout.png" title="log-out" />
+            <img src="images/log_out.png" title="log-out" />
         </a>
 
         </div>
