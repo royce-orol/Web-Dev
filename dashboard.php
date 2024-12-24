@@ -22,26 +22,9 @@ $announcements = [
 
 
 <?php include 'includes/header.php'; ?>
-<div class="dashboard-container">
-    <div class="dashboard-sidebar">
-        <h3>Features</h3>
-        <ul>
-            <?php if ($role === 'student'): ?>
-                <li><a href="view_projects.php">View Projects</a></li>
-                <li><a href="submit_proposal.php">Submit Proposal</a></li>
-                <li><a href="profile.php">Update Profile</a></li>
-            <?php elseif ($role === 'moderator'): ?>
-                <li><a href="manage_feedback.php">Manage Feedback</a></li>
-                <li><a href="view_proposals.php">View Proposals</a></li>
-            <?php elseif ($role === 'supervisor'): ?>
-                <li><a href="assign_projects.php">Assign Projects</a></li>
-                <li><a href="manage_meetings.php">Manage Meetings</a></li>
-            <?php elseif ($role === 'admin'): ?>
-                <li><a href="manage_users.php">Manage Users</a></li>
-                <li><a href="edit_announcements.php">Edit Announcements</a></li>
-            <?php endif; ?>
-        </ul>
-    </div>
+<?php include 'includes/sidebar.php'; ?>
+
+
 
     <div class="dashboard-main">
         <h1>Announcements</h1>
