@@ -25,22 +25,22 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             <p>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></p>
         </div>
         <div class="navbar-icons">
-            <a href="dashboard.php" title="Dashboard">
-                <i class="fas fa-home"></i>
+            <a href="dashboard.php">
+                <img src="images/home.png" title="Dashboard" alt="Dashboard" />
             </a>
             <a href="search.php" title="Search">
-                <i class="fas fa-search"></i>
+                <img src="images/search.png" title="Search" />
             </a>
             <a href="messages.php" title="Messages">
                 <i class="fas fa-envelope"></i>
             </a>
         </div>
         <div class=logout-button>
-            <a href="logout.php" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+            <a href="log-out.php" onclick="return confirm('Are you sure you want to logout?')">
+            <img src="images/log_out.png" title="log-out" />
+        </a>
 
         </div>
     </div>
-
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
