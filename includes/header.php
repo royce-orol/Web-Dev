@@ -17,7 +17,7 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYP Management System</title>
-    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="/WebDevAsgn/css/header.css">
 </head>
 <body>
     <div class="navbar">
@@ -25,10 +25,10 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             <p>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></p>
         </div>
         <div class="navbar-icons">
-            <a href="dashboard.php">
+            <a href="/WebDevAsgn/dashboard.php">
                 <img src="/WebDevAsgn/images/home.png" title="Dashboard" alt="Dashboard" />
             </a>
-            <a href="search.php" title="Search">
+            <a href="/WebDevAsgn/search.php" title="Search">
                 <img src="/WebDevAsgn/images/search.png" title="Search" />
             </a>
         </div>
