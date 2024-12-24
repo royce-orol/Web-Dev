@@ -22,7 +22,7 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
 <body>
     <div class="navbar">
         <div class="welcome-message">
-            <p>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></p>
+            <p><b>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></b></p>
         </div>
         <div class="navbar-icons">
             <a href="/WebDevAsgn/dashboard.php">
@@ -33,11 +33,11 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             </a>
         </div>
         <div class=logout-button>
-            <a href="/WebDevAsgn/log-out.php" onclick="return confirm('Are you sure you want to logout?')">
+            <a href="/WebDevAsgn/logout.php" onclick="return confirm('Are you sure you want to logout?')">
             <img src="/WebDevAsgn/images/log_out.png" title="log-out" />
         </a>
-
         </div>
     </div>
+    <hr>
 </body>
 </html>
