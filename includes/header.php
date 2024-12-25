@@ -17,30 +17,27 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYP Management System</title>
-    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="/WebDevAsgn/css/header.css">
 </head>
 <body>
     <div class="navbar">
         <div class="welcome-message">
-            <p>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></p>
+            <p><b>Welcome, <?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></b></p>
         </div>
         <div class="navbar-icons">
             <a href="/WebDevAsgn/dashboard.php">
                 <img src="/WebDevAsgn/images/home.png" title="Dashboard" alt="Dashboard" />
             </a>
-            <a href="search.php" title="Search">
+            <a href="/WebDevAsgn/search.php" title="Search">
                 <img src="/WebDevAsgn/images/search.png" title="Search" />
-            </a>
-            <a href="messages.php" title="Messages">
-                <i class="fas fa-envelope"></i>
             </a>
         </div>
         <div class=logout-button>
-            <a href="logout.php" onclick="return confirm('Are you sure you want to logout?')">
+            <a href="/WebDevAsgn/logout.php" onclick="return confirm('Are you sure you want to logout?')">
             <img src="/WebDevAsgn/images/log_out.png" title="log-out" />
         </a>
-
         </div>
     </div>
+    <hr>
 </body>
 </html>
