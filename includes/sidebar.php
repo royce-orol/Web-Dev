@@ -3,7 +3,7 @@
     <ul>
         <?php if ($_SESSION['role'] === 'student'): ?>
             <li><a href="/WebDevAsgn/view_projects.php">View Projects</a></li>
-            <li><a href="/WebDevAsgn/submit_proposal.php">Submit Proposal</a></li>
+            <li><a href="/WebDevAsgn/student/submit_proposal.php">Submit Proposal</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Update Profile</a></li>
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
 

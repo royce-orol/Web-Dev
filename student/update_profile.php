@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-<?php include '../includes/header.php'; ?>
+
+
 <div class="dashboard-container">
     <?php include '../includes/sidebar.php'; ?>
     <div class="dashboard-main">
