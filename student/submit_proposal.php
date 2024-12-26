@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -15,37 +18,18 @@ $last_name = $_SESSION['last_name'];
 $success_message = "";
 $error_message = "";
 
+include('../db_connection.php'); // Adjusted for consistent relative path
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the submitted proposal data
     $proposal_title = trim($_POST['proposal_title']);
     $proposal_description = trim($_POST['proposal_description']);
 
-    // Handle file upload (optional, if students can upload files)
-    $file_upload_success = false;
-    if (isset($_FILES['proposal_file']) && $_FILES['proposal_file']['error'] === 0) {
-        $file_name = $_FILES['proposal_file']['name'];
-        $file_tmp_name = $_FILES['proposal_file']['tmp_name'];
-        $file_path = 'uploads/' . basename($file_name);
-        if (move_uploaded_file($file_tmp_name, $file_path)) {
-            $file_upload_success = true;
-        } else {
-            $error_message = "Error uploading the file.";
-        }
-    }
-
-    // Save proposal to the database (this example uses a dummy database interaction)
+    // Save proposal to the database
     if ($proposal_title && $proposal_description) {
-        // Database logic for inserting the proposal (e.g., using PDO or MySQLi)
-        // Assuming you have a database table `proposals` with columns for title, description, and file path.
-        
-        // Example: Save to database (replace with actual database connection and queries)
-        $conn = new mysqli('localhost', 'username', 'password', 'database');
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        $stmt = $conn->prepare("INSERT INTO proposals (user_id, title, description, file_path) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("isss", $_SESSION['user_id'], $proposal_title, $proposal_description, $file_upload_success ? $file_path : null);
+        // Database logic for inserting the proposal
+        $stmt = $conn->prepare("INSERT INTO proposal (sender_id, title, description) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $_SESSION['user_id'], $proposal_title, $proposal_description);
 
         if ($stmt->execute()) {
             $success_message = "Your proposal has been submitted successfully!";
@@ -54,11 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $stmt->close();
-        $conn->close();
     } else {
         $error_message = "Please fill in all fields.";
     }
 }
+
+// Close the database connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Submit Proposal</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -89,15 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <!-- Proposal form -->
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST">
                 <label for="proposal_title">Proposal Title:</label>
                 <input type="text" id="proposal_title" name="proposal_title" required>
 
                 <label for="proposal_description">Proposal Description:</label>
                 <textarea id="proposal_description" name="proposal_description" required></textarea>
-
-                <label for="proposal_file">Upload Proposal File (optional):</label>
-                <input type="file" id="proposal_file" name="proposal_file">
 
                 <button type="submit">Submit Proposal</button>
             </form>
