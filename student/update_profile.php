@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success_message = "Profile updated successfully!";
 }
 ?>
-<link rel="stylesheet" href="../css/update_profile.css">
 <link rel="stylesheet" href="../css/dashboard.css">
 <link rel="stylesheet" href="../css/header.css">
 
@@ -32,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
+<?php include '../includes/header.php'; ?>
 
 <div class="dashboard-container">
     <?php include '../includes/sidebar.php'; ?>

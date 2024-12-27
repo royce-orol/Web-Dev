@@ -38,6 +38,6 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
         </a>
         </div>
     </div>
-    <hr>
+    
 </body>
 </html>

@@ -47,28 +47,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Feedback</title>
-    <link rel="stylesheet" href="../css/feedback.css">
     <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
-    <?php include '../includes/sidebar.php'; ?>
 
-    <div class="feedback-container">
-        <h1>Submit Feedback</h1>
-        <?php if (!empty($success_message)): ?>
-            <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
-        <?php elseif (!empty($error_message)): ?>
-            <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
-        <?php endif; ?>
+    <div class="dashboard-container">
+        <?php include '../includes/sidebar.php'; ?>
 
-        <form method="POST" action="">
-            <label for="message">Your Feedback:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
+        <div class="dashboard-main">
+            <h1>Submit Feedback</h1>
+
+            <!-- Display success or error message -->
+            <?php if (!empty($success_message)): ?>
+                <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
+            <?php elseif (!empty($error_message)): ?>
+                <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
+            <?php endif; ?>
+
+            <!-- Feedback form -->
+            <form method="POST">
+                <label for="message">Your Feedback:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
+    <?php include '../footer.php'; ?>
 </body>
 </html>
