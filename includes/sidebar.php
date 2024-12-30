@@ -2,11 +2,19 @@
     <h3>Features</h3>
     <ul>
         <?php if ($_SESSION['role'] === 'student'): ?>
-            <li><a href="/WebDevAsgn/view_projects.php">View Projects</a></li>
+            <li><a href="/WebDevAsgn/student/view_project.php">View Projects</a></li>
             <li><a href="/WebDevAsgn/student/submit_proposal.php">Submit Proposal</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Update Profile</a></li>
             <li><a href="/WebDevAsgn/student/submit_feedback.php">Submit Feedback</a></li>
             <li><a href="/WebDevAsgn/student/book_presentation.php">Book Presentation</a></li>
+            <li><a href="/WebDevAsgn/student/schedule_meeting.php">Schedule Meeting</a></li>
+            <li><a href="/WebDevAsgn/student/view_progress.php">View Progress</a></li>
+            <li><a href="/WebDevAsgn/student/view_marks.php">View Marks</a></li>
+            <li><a href="/WebDevAsgn/student/view_supervisors.php">View Supervisors</a></li>
+
+
+
+
 
 
 
