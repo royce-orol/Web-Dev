@@ -32,7 +32,7 @@ $result = $conn->query($sql);
         <?php include '../includes/sidebar.php'; ?>
 
         <div class="dashboard-main">
-            <h1>View Supervisors</h1>
+            <h1>View List of Supervisors</h1>
 
             <!-- Display supervisors in a table -->
             <table>

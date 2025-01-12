@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'db_connection.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -11,11 +12,16 @@ if (!isset($_SESSION['user_id'])) {
 $name = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 $role = $_SESSION['role']; // student, moderator, admin, supervisor
 
-// Sample announcements data (replace with database retrieval)
-$announcements = [
-    ["title" => "Welcome to the FYP Management System!", "content" => "Please check your assigned projects and schedules."],
-    ["title" => "Submission Deadline", "content" => "Ensure your proposals are submitted by December 20th."],
-];
+// Retrieve announcements from the database
+$announcements = [];
+$query = "SELECT description FROM Announcements ORDER BY id DESC";
+$result = $conn->query($query);
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $announcements[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +29,7 @@ $announcements = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Announcements</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/header.css">
 </head>
@@ -34,13 +40,21 @@ $announcements = [
         <?php include 'includes/sidebar.php'; ?>
 
         <div class="dashboard-main">
-            <h1>Announcements</h1>
-            <?php foreach ($announcements as $announcement): ?>
-                <div class="announcement">
-                    <h2><?php echo htmlspecialchars($announcement['title']); ?></h2>
-                    <p><?php echo htmlspecialchars($announcement['content']); ?></p>
-                </div>
-            <?php endforeach; ?>
+            <h1>Welcome, <?php echo htmlspecialchars($name); ?>!</h1>
+            <p>Your role: <strong><?php echo htmlspecialchars($role); ?></strong></p>
+
+            <hr>
+
+            <h2>Announcements</h2>
+            <?php if (!empty($announcements)): ?>
+                <?php foreach ($announcements as $announcement): ?>
+                    <div class="announcement">
+                        <p><?php echo htmlspecialchars($announcement['description']); ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No announcements available at the moment.</p>
+            <?php endif; ?>
         </div>
     </div>
 

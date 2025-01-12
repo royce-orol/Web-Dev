@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../db_connection.php'); // Adjusted for consistent relative path
+include('../db_connection.php'); 
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {

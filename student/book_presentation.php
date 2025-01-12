@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Database connection
-include('../db_connection.php'); // Adjusted for consistent relative path
+include('../db_connection.php'); 
 
 
 // Retrieve student proposals with approved status

@@ -57,7 +57,8 @@ if ($result->num_rows > 0) {
             <?php if ($proposal): ?>
                 <div class="marks-details">
                     <p><strong>Project Title:</strong> <?php echo htmlspecialchars($proposal['title']); ?></p>
-                    <p><strong>Your Final Year Project Marks:</strong> <?php echo htmlspecialchars($proposal['marks']); ?> / 100</p>
+                    <p><strong>Your Final Year Project Marks:</strong> <?php  echo htmlspecialchars($proposal['marks'] ?? 'Not yet assigned');
+ ?> / 100</p>
                 </div>
             <?php else: ?>
                 <p>No approved proposal found or marks not assigned yet.</p>
