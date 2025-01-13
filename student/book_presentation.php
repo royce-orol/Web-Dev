@@ -45,8 +45,7 @@ if (!$result) {
             <h1>Book Presentation</h1>
 
             <!-- Check if there are any approved proposals -->
-            <?php if ($result->num_rows > 0): ?>
-                <!-- Form to book presentation -->
+            
                 <form action="submit_presentation.php" method="POST">
                     <label for="proposal">Select Proposal:</label>
                     <select name="proposal_id" id="proposal">
@@ -65,9 +64,7 @@ if (!$result) {
 
                     <button type="submit">Book Presentation</button>
                 </form>
-            <?php else: ?>
-                <p>No approved proposals available for booking.</p>
-            <?php endif; ?>
+           
         </div>
     </div>
 
