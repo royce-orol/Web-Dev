@@ -1,10 +1,8 @@
 <?php
 session_start();
-include '../db_connection.php'; // Ensure the correct path for db_connection.php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+include '../db_connection.php'; // Ensure correct path for db_connection.php
 
-// Check if the user is logged in and is an admin
+// Check if the user is logged in and is a moderator
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'moderator') {
     header("Location: login.php");
     exit;
@@ -18,12 +16,11 @@ $query = "SELECT f.feedback_id, f.message, u.first_name AS sender_first_name, u.
           ORDER BY f.created_at DESC";
 $result = $conn->query($query);
 
-if ($result && $result->num_rows > 0) {
+// Fetch feedback records if available
+if ($result) {
     while ($row = $result->fetch_assoc()) {
         $feedbacks[] = $row;
     }
-} else {
-    $error_message = "No feedback found.";
 }
 ?>
 

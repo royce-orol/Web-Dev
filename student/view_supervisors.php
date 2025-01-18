@@ -4,11 +4,7 @@ include('../db_connection.php'); // Adjusted for consistent relative path
 
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
+
 
 // Query to fetch supervisors and their emails
 $sql = "SELECT first_name, last_name, email FROM users WHERE role = 'supervisor'";

@@ -1,51 +1,19 @@
 <?php
 session_start();
-session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+include('../db_connection.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
 
-// Retrieve user details
-$first_name = $_SESSION['first_name'];
-$last_name = $_SESSION['last_name'];
-
-// Initialize success and error messages
-$success_message = "";
-$error_message = "";
-
-include('../db_connection.php'); // Adjusted for consistent relative path
-
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the submitted proposal data
-    $proposal_title = trim($_POST['proposal_title']);
-    $proposal_description = trim($_POST['proposal_description']);
+    $proposal_title = $_POST['proposal_title'];
+    $proposal_description = $_POST['proposal_description'];
 
-    // Save proposal to the database
-    if ($proposal_title && $proposal_description) {
-        // Database logic for inserting the proposal
-        $stmt = $conn->prepare("INSERT INTO proposal (sender_id, title, description) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $_SESSION['user_id'], $proposal_title, $proposal_description);
-
-        if ($stmt->execute()) {
-            $success_message = "Your proposal has been submitted successfully!";
-        } else {
-            $error_message = "Error submitting your proposal. Please try again.";
-        }
-
-        $stmt->close();
-    } else {
-        $error_message = "Please fill in all fields.";
-    }
+    // Insert proposal into the database
+    $stmt = $conn->prepare("INSERT INTO proposal (sender_id, title, description) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $_SESSION['user_id'], $proposal_title, $proposal_description);
+    $stmt->execute();
+    $stmt->close();
 }
-
-// Close the database connection
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -62,19 +30,8 @@ $conn->close();
 
     <div class="dashboard-container">
         <?php include '../includes/sidebar.php'; ?>
-
         <div class="dashboard-main">
             <h1>Submit Proposal</h1>
-
-            <!-- Display success or error message -->
-            <?php if (!empty($success_message)): ?>
-                <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
-            <?php endif; ?>
-            <?php if (!empty($error_message)): ?>
-                <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
-            <?php endif; ?>
-
-            <!-- Proposal form -->
             <form method="POST">
                 <label for="proposal_title">Proposal Title:</label>
                 <input type="text" id="proposal_title" name="proposal_title" required>
@@ -90,3 +47,4 @@ $conn->close();
     <?php include '../footer.php'; ?>
 </body>
 </html>
+

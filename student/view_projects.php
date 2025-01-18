@@ -1,14 +1,10 @@
 <?php
-// Include database connection
+// Start the session
 session_start();
+
+// Include database connection
 include('../db_connection.php'); // Adjusted for consistent relative path
 
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
 
 // Get student ID from session
 $student_id = $_SESSION['user_id'];
@@ -27,12 +23,13 @@ $sql = "SELECT
         LEFT JOIN 
             users u ON p.sender_id = u.id
         WHERE 
-            p.sender_id = ?";
+            p.sender_id = ?"; // Only fetch projects related to the logged-in student
 
+// Prepare and execute the query
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $student_id);
+$stmt->bind_param("i", $student_id); // Bind the student ID to the query
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result(); // Fetch the result of the query
 ?>
 
 <!DOCTYPE html>
@@ -45,10 +42,10 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
-    <?php include '../includes/header.php'; ?>
+    <?php include '../includes/header.php'; ?> <!-- Include header -->
 
     <div class="dashboard-container">
-        <?php include '../includes/sidebar.php'; ?>
+        <?php include '../includes/sidebar.php'; ?> <!-- Include sidebar -->
 
         <div class="dashboard-main">
             <h1>View Projects</h1>
@@ -74,6 +71,7 @@ $result = $stmt->get_result();
                                 <td><?php echo htmlspecialchars($row['proposal_status']); ?></td>
                                 <td>
                                     <?php 
+                                    // Check if the presentation date exists, if not display 'Not Scheduled'
                                     echo $row['presentation_date'] 
                                         ? htmlspecialchars($row['presentation_date']) 
                                         : 'Not Scheduled'; 
@@ -83,7 +81,7 @@ $result = $stmt->get_result();
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">No projects found.</td>
+                            <td colspan="5">No projects found.</td> <!-- Message if no projects are found -->
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -91,6 +89,6 @@ $result = $stmt->get_result();
         </div>
     </div>
 
-    <?php include '../footer.php'; ?>
+    <?php include '../footer.php'; ?> <!-- Include footer -->
 </body>
 </html>

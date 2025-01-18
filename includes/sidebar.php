@@ -12,12 +12,16 @@
             <li><a href="/WebDevAsgn/student/view_goals.php">View Goals</a></li>
             <li><a href="/WebDevAsgn/student/book_presentation.php">Book Presentation</a></li>
             <li><a href="/WebDevAsgn/student/view_marks.php">View Marks</a></li>
+            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
+
 
 
         <?php elseif ($_SESSION['role'] === 'moderator'): ?>
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
             <li><a href="/WebDevAsgn/moderator/view_feedback.php">View Feedback</a></li>
             <li><a href="/WebDevAsgn/moderator/view_proposals.php">View Proposals</a></li>
+            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
+
 
 
         <?php elseif ($_SESSION['role'] === 'supervisor'): ?>
@@ -26,6 +30,8 @@
             <li><a href="/WebDevAsgn/supervisor/assign_projects.php">Assign Projects</a></li>
             <li><a href="/WebDevAsgn/supervisor/manage_meetings.php">Manage Meetings</a></li>
             <li><a href="/WebDevAsgn/supervisor/create_goals.php">Create Goals</a></li>
+            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
+
 
 
 
@@ -37,6 +43,8 @@
             <li><a href="/WebDevAsgn/admin/view_records.php">View Records</a></li>
             <li><a href="/WebDevAsgn/admin/add_admin.php">Add Admin</a></li>
             <li><a href="/WebDevAsgn/admin/add_moderator.php">Add Moderator</a></li>
+            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
+
 
             <li><a href="/WebDevAsgn/admin/add_supervisor.php">Add Supervisor</a></li>
 

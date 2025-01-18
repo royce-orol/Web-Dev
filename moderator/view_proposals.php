@@ -1,13 +1,7 @@
 <?php
 session_start();
 include '../db_connection.php';
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
+
 
 // Retrieve proposals where status is not approved
 $query = "SELECT p.proposal_id, u1.first_name AS sender_first_name, u1.last_name AS sender_last_name, 
