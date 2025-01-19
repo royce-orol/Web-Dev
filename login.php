@@ -6,6 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // Ensure the database connection is set to 'web_dev'
+    $conn->select_db('web_dev');
+
     $query = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
@@ -25,8 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Invalid password.";
         }
     } else {
-        $error = "User not found.";
+        $error = "Invalid email or user not found.";
     }
+    // Pass the error message to the login page
     header("Location: login.php?error=" . urlencode($error));
     exit();
 }
@@ -38,6 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FYP Management System</title>
     <link rel="stylesheet" href="css/login.css">
+    <script>
+        // Display alert message if error exists
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                alert(decodeURIComponent(error));
+            }
+        };
+    </script>
 </head>
 <body>
     <div class="container">
