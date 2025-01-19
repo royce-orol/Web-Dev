@@ -34,25 +34,7 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Handle user edit form submission
-if (isset($_POST['edit'])) {
-    $user_id = $_POST['user_id'];
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $email = $_POST['email'];
-    $student_id = $_POST['student_id'];
-    $role = $_POST['role'];
 
-    // Update user details
-    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, email = ?, student_id = ?, role = ? WHERE id = ?");
-    $stmt->bind_param("sssssi", $first_name, $last_name, $email, $student_id, $role, $user_id);
-
-    if ($stmt->execute()) {
-        $success_message = "User details updated successfully!";
-    } else {
-        $error_message = "Error updating user details: " . $stmt->error;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -103,8 +85,7 @@ if (isset($_POST['edit'])) {
                             <td><?php echo htmlspecialchars($user['student_id']); ?></td>
                             <td><?php echo htmlspecialchars($user['role']); ?></td>
                             <td>
-                                <!-- Edit Button -->
-                                <a href="edit_user.php?id=<?php echo $user['id']; ?>">Edit</a> | 
+                                
                                 
                                 <!-- Delete Button -->
                                 <a href="?delete=<?php echo $user['id']; ?>" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
-    // Set the role as "admin"
+    // Set the role as "Moderator"
     $role = 'moderator';
     
     // Validate inputs

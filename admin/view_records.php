@@ -84,7 +84,7 @@ if ($result && $result->num_rows > 0) {
 
 // Query for presentations
 $query_presentations = "
-    SELECT p.id, p.student_id, p.date, p.time, p.created_at, 
+    SELECT p.id, p.student_id, p.date, p.time, 
            u.first_name AS student_first_name, u.last_name AS student_last_name, 
            pr.title AS proposal_title
     FROM presentation p
@@ -249,19 +249,17 @@ if ($result && $result->num_rows > 0) {
                         <th>Proposal Title</th>
                         <th>Presentation Date</th>
                         <th>Presentation Time</th>
-                        <th>Created Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!empty($presentations)): ?>
                         <?php foreach ($presentations as $presentation): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($presentation['presentation_id']); ?></td>
+                                <td><?php echo htmlspecialchars($presentation['id']); ?></td>
                                 <td><?php echo htmlspecialchars($presentation['student_first_name'] . ' ' . $presentation['student_last_name']); ?></td>
                                 <td><?php echo htmlspecialchars($presentation['proposal_title']); ?></td>
-                                <td><?php echo htmlspecialchars($presentation['presentation_date']); ?></td>
-                                <td><?php echo htmlspecialchars($presentation['presentation_time']); ?></td>
-                                <td><?php echo htmlspecialchars($presentation['created_at']); ?></td>
+                                <td><?php echo htmlspecialchars($presentation['date']); ?></td>
+                                <td><?php echo htmlspecialchars($presentation['time']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
