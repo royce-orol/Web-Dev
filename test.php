@@ -1,82 +1,87 @@
 <?php
+session_start();
+
+// Include necessary files for database interaction
+include("classes/learn.php");
+include("classes/logins.php");
+include("classes/user.php");
 /*
-    session_start();
-
-
-    include("classes/learn.php");
-    include("classes/logins.php");
-    include("classes/user.php");
-
-    if(isset($_SESSION['userid']) && is_numeric($_SESSION['userid']))
-    {
-
-        $id = $_SESSION['userid'];
-        $login = new Login();
-
-        $result = $login->check_login($id);
-
-        if($result)
-        {
-
-            $user = new User();
-            $user_data = $user->get_data($id);
-
-            if(!$user_data)
-            {
-                header("Location: login.php");
-                die;
-
-            }
-
-        }else
-        {
-            header("Location: login.php");
-            die;
-
-        }
-
-
-
-    }else
+    if(!isset($_SESSION['username']))
     {
         header("Location: login.php");
-        die;
+    }
+    elseif ($_SESSION['usertype'] =='admin')
+    {
+        // code...
+        header("Location: login.php");
     }
 */
+$host ="localhost";
+$user ="root";
+$password ="";
+$db ="ebwdata";
+
+$data=mysqli_connect($host,$user,$password,$db);
+
+$name = $_SESSION['username'];
+
+$sql="SELECT * FROM user WHERE username='$name' ";
+
+$result=mysqli_query($data,$sql);
+
+$info=mysqli_fetch_assoc($result);
+
+
+// Function to update data in database
+function updateData($table, $data, $conditions = '') {
+    global $conn; // Assuming $conn is your database connection
+
+    // Build SQL UPDATE statement
+    $sql = "UPDATE $table SET ";
+    $updates = [];
+
+    foreach ($data as $key => $value) {
+        $updates[] = "$key = '$value'";
+    }
+
+    $sql .= implode(", ", $updates);
+
+    if (!empty($conditions)) {
+        $sql .= " WHERE $conditions";
+    }
+
+    // Execute query
+    if (mysqli_query($conn, $sql)) {
+        echo "Record updated successfully";
+    } else {
+        echo "Error updating record: " . mysqli_error($conn);
+    }
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eB Asset</title>
+    <title>Edit Profile - eB Asset</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Ensures the body takes up at least the full height of the viewport */
         }
         .header {
-            width: 100%;
-            background-color: #4CAF50; /* Original color */
+            background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
         }
         .header h1 {
             margin: 0;
             font-size: 24px;
-            flex: 1;
         }
         .profile-icon {
             width: 50px;
@@ -91,36 +96,44 @@
             height: 100%;
             object-fit: cover;
         }
-        .dashboard-container {
-            max-width: 600px;
-            width: 100%;
-            margin-top: 50px;
-            margin: 0 auto; /* Center the container horizontally */
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex-grow: 1; /* Allows the dashboard to grow to fill available space */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .dashboard-container h2 {
+        .container h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #343a40;
-            font-size: 22px;
         }
-        .welcome-message {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #555;
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         .btn-container {
-            margin-bottom: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
         .btn {
-            padding: 12px 20px;
-            background-color: #28a745;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            padding: 10px;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
@@ -128,66 +141,69 @@
             font-size: 16px;
             text-align: center;
             text-decoration: none;
-            width: 80%;
-            transition: background-color 0.3s;
+            margin-top: 20px;
         }
         .btn:hover {
-            background-color: #218838;
+            background-color: #45a049;
         }
-        /* Footer Styles */
-        .footer {
-            background-color: #343a40;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            flex-shrink: 0; /* Prevents the footer from shrinking */
-            display: flex;
-            justify-content: space-between; /* Aligns items to the space between the container */
-            align-items: center;
+        .btn.logout {
+            background-color: #dc3545;
         }
-        .footer p {
-            margin: 0;
-        }
-        .footer a {
-            color: white;
-            text-decoration: none;
-            padding: 5px 10px;
-            border: none; /* Remove border */
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .footer a:hover {
-            background-color: #28a745;
-            color: white;
+        .btn.logout:hover {
+            background-color: #c82333;
         }
     </style>
+    <script>
+        function saveProfile(event) {
+            event.preventDefault();
+            const userId = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Replace the alert with code to send the data to the server
+            alert(`Profile Updated:\nUsername: ${username}\nEmail: ${email}\nPassword: ${password}\nUser ID: ${userId}`);
+
+           
+            window.location.href = "userp.php";
+        }
+
+        function logout() {
+            // Redirect to the login page
+            window.location.href = "logout.php";
+        }
+    </script>
 </head>
 <body>
     <header class="header">
         <h1>eB Asset</h1>
-        <a href="userp.php" class="profile-icon">
-            <img src="image/User.jpg" alt="Profile"> <!-- Updated profile image source -->
+        <a href="dashboard.php" class="profile-icon">
+            <img src="image/User.jpg" alt="Profile">
         </a>
-    </header>    
-    <div class="dashboard-container">
-        <h2>Welcome to Your eB Asset Dashboard</h2>
-        <div class="welcome-message">
-            <p>Hello, <?php echo $user_data['username'] ?>! You are now logged in.</p>
-        </div>
-        <div class="btn-container">
-            <a href="report_faulty.php" class="btn">Report Faulty Asset</a>
-        </div>
-        <div class="btn-container">
-            <a href="request_asset.php" class="btn">Request Loan/Borrow Asset</a>
-        </div>
+    </header>
+    <div class="container">
+        <h2>Edit Profile</h2>
+        <form method="post">
+            <!-- Hidden input field for user ID -->
+            <input type="hidden"  name="userId" value="<?php echo "{$info['username']}" ?>">
+            
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password">
+            </div>
+            <div class="btn-container">
+                <button type="submit" class="btn">Save Profile</button>
+                <a href="logout.php" class="btn logout">Logout</a>
+            </div>
+        </form>
     </div>
-    <footer class="footer">
-        <div class="footer-content">
-            <a href="logout.php">Logout</a> <!-- Link to Logout -->
-        </div>
-        <div class="footer-content">
-            <p>&copy; 2024 eB Asset. All rights reserved.</p>
-        </div>
-    </footer>
 </body>
 </html>
