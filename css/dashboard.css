@@ -54,3 +54,108 @@
 .announcement h2 {
     margin-bottom: 10px;
 }
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fdf5e6; /* Wheat background */
+    color: #4b3d2a; /* Dark brown text */
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.dashboard-container .sidebar {
+    background-color: #e0c097; /* Light wheat sidebar */
+    padding: 20px;
+    width: 250px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.dashboard-main {
+    flex: 1;
+    padding: 40px;
+    background-color: #fff7e8; /* Slightly lighter wheat */
+    border-left: 5px solid #e0c097; /* Accent border */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-main h1 {
+    color: #8b5e3c; /* Richer brown for headings */
+    border-bottom: 2px solid #e0c097;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #4b3d2a;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #e0c097;
+    border-radius: 5px;
+    background-color: #fff7e8;
+    color: #4b3d2a;
+}
+
+form input:focus {
+    border-color: #8b5e3c;
+    outline: none;
+    box-shadow: 0 0 5px rgba(139, 94, 60, 0.5);
+}
+
+form button {
+    background-color: #e0c097;
+    color: #4b3d2a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #d2a87c;
+}
+
+/* Messages */
+.success-message {
+    color: #4caf50;
+    background-color: #e8f5e9;
+    padding: 10px;
+    border: 1px solid #4caf50;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    color: #f44336;
+    background-color: #fdecea;
+    padding: 10px;
+    border: 1px solid #f44336;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}

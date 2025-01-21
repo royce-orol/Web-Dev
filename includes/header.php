@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Check if a session is already active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -10,6 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 // Retrieve user details from session
 $name = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 $role = $_SESSION['role']; // student, moderator, admin, supervisor
+$profile_picture = $_SESSION['profile_picture'] ?? '/WebDevAsgn/images/defaultprofile.png';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,11 +29,12 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             align-items: center;
             padding: 10px 20px;
             background-color: wheat;
-            color: white;
-            justify-content: space-between; /* Spread out content to left and right */
+            color: black; /* Updated text color for readability */
+            justify-content: space-between;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
 
-        /* Container for profile picture and welcome message */
+        /* Profile and welcome message container */
         .profile-welcome {
             display: flex;
             align-items: center;
@@ -40,26 +45,26 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            margin-right: 10px; /* Space between the profile picture and welcome message */
+            margin-right: 10px;
         }
 
         .welcome-message p {
             margin: 0;
             font-size: 18px;
-            color: black; /* Set the welcome message text color to black */
+            color: black;
         }
 
         /* Navbar button images */
         .navbar-icons img, .logout-button img {
-            width: 20px; /* Smaller size */
-            height: 20px; /* Smaller size */
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth animation */
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* Magnify animation on hover */
         .navbar-icons a:hover img, .logout-button a:hover img {
-            transform: scale(1.2); /* Magnify */
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+            transform: scale(1.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         /* Search input field */
@@ -69,9 +74,9 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
             padding: 5px;
             font-size: 14px;
             border: 1px solid #ccc;
-            border-radius: 20px; /* Rounded edges */
-            outline: none; /* Remove default outline */
-            transition: border 0.3s ease; /* Optional: Smooth transition for border */
+            border-radius: 20px;
+            outline: none;
+            transition: border 0.3s ease;
         }
     </style>
 </head>
@@ -79,7 +84,7 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
     <div class="navbar">
         <!-- Profile and welcome message container -->
         <div class="profile-welcome">
-            <img src="/WebDevAsgn/images/defaultprofile.png" alt="Profile Picture" class="profile-picture">
+            <img src="<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="profile-picture">
             <div class="welcome-message">
                 <p><b><?php echo htmlspecialchars($name); ?> | Role: <?php echo htmlspecialchars($role); ?></b></p>
             </div>
