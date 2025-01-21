@@ -32,6 +32,42 @@ if ($result) {
     <title>View Feedback</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .feedback-table {
+            width: 100%;
+            margin: 0 auto;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -43,24 +79,32 @@ if ($result) {
             <h1>Feedback Records</h1>
 
             <?php if (!empty($feedbacks)): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Sender</th>
-                            <th>Message</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($feedbacks as $feedback): ?>
+                <div class="feedback-table">
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($feedback['sender_first_name']) . ' ' . htmlspecialchars($feedback['sender_last_name']); ?></td>
-                                <td><?php echo htmlspecialchars($feedback['message']); ?></td>
-                                <td><?php echo htmlspecialchars($feedback['created_at']); ?></td>
+                                <th>Sender</th>
+                                <th>Message</th>
+                                <th>Date</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($feedbacks as $feedback): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($feedback['sender_first_name']) . ' ' . htmlspecialchars($feedback['sender_last_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($feedback['message']); ?></td>
+                                    <td>
+                                        <?php 
+                                        // Convert timestamp to human-readable format
+                                        $formattedDate = date("d F Y", strtotime($feedback['created_at']));
+                                        echo htmlspecialchars($formattedDate);
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php else: ?>
                 <p>No feedback records available.</p>
             <?php endif; ?>

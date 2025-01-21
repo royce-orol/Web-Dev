@@ -60,10 +60,11 @@
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Profile</a></li>
             <li><a href="/WebDevAsgn/admin/manage_announcements.php">Manage Announcements</a></li>
-            <li><a href="/WebDevAsgn/admin/manage_users.php">Manage Users</a></li>
+            <li><a href="/WebDevAsgn/admin/manage_users.php">Users</a></li>
             <li><a href="/WebDevAsgn/admin/view_records.php">View Records</a></li>
             <li><a href="/WebDevAsgn/admin/add_admin.php">Add Admin</a></li>
             <li><a href="/WebDevAsgn/admin/add_moderator.php">Add Moderator</a></li>
+            <li><a href="/WebDevAsgn/admin/m_users.php">Manage Users</a></li>
             <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/admin/add_supervisor.php">Add Supervisor</a></li>
         <?php endif; ?>
