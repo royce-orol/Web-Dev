@@ -96,12 +96,58 @@
         <div class="dashboard-main">
             <h1>Submit Proposal</h1>
 
-            <!-- Display success message after form submission -->
-            <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && $stmt): ?>
-                <div class="success-message">Your proposal has been submitted successfully!</div>
+            <?php
+            // Initialize variables
+            $successMessage = "";
+            $errorMessage = "";
+
+            // Check if form data is available via GET
+            if (isset($_GET['proposal_title']) && isset($_GET['proposal_description'])) {
+                // Database credentials
+                $host = 'localhost'; // Change as needed
+                $db = 'web_dev';     // Database name
+                $user = 'root';      // Database username
+                $password = '';      // Database password
+
+                // Connect to the database
+                $conn = new mysqli($host, $user, $password, $db);
+
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // Get form data
+                $proposalTitle = $conn->real_escape_string($_GET['proposal_title']);
+                $proposalDescription = $conn->real_escape_string($_GET['proposal_description']);
+
+                // Insert data into the proposal table
+                $sql = "INSERT INTO proposal (title, description) VALUES ('$proposalTitle', '$proposalDescription')";
+
+                if ($conn->query($sql) === TRUE) {
+                    $successMessage = "Your proposal has been sent successfully!";
+                } else {
+                    $errorMessage = "Error: " . $conn->error;
+                }
+
+                // Close the connection
+                $conn->close();
+            }
+            ?>
+
+            <!-- Display success or error messages -->
+            <?php if (!empty($successMessage)): ?>
+                <div class="success-message">
+                    <?php echo $successMessage; ?>
+                </div>
             <?php endif; ?>
 
-            <form method="POST">
+            <?php if (!empty($errorMessage)): ?>
+                <div class="error-message"><?php echo $errorMessage; ?></div>
+            <?php endif; ?>
+
+            <!-- Form is always visible after GET -->
+            <form method="GET">
                 <label for="proposal_title">Proposal Title:</label>
                 <input type="text" id="proposal_title" name="proposal_title" placeholder="Enter your proposal title" required>
 
