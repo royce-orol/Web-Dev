@@ -67,7 +67,11 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                         <?php foreach ($users as $user): ?>
                             <tr>
                                 <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
-                                <td><a href="mailto:<?= htmlspecialchars($user['email']); ?>"><?= htmlspecialchars($user['email']); ?></a></td>
+                                <td>
+                                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=<?= urlencode($user['email']); ?>" target="_blank">
+                                        <?= htmlspecialchars($user['email']); ?>
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
