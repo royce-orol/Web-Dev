@@ -1,6 +1,21 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Ensure the body and html occupy the full height of the viewport */
+    display: flex;
+    flex-direction: column;
+}
+
 .dashboard-container {
     display: flex;
-    min-height: calc(100vh - 80px); /* Adjust for navbar and footer */
+    flex: 1; /* Ensures the main container takes up remaining space between header and footer */
+    min-height: 0; /* Avoid overflow issues */
+}
+
+.dashboard-main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling if content exceeds the container height */
 }
 
 .dashboard-sidebar {

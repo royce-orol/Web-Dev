@@ -26,6 +26,8 @@ $announcements = [
     <title>Announcements</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
