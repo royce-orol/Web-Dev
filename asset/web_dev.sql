@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 19, 2025 at 02:00 PM
+-- Generation Time: Jan 22, 2025 at 10:17 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -176,6 +176,65 @@ CREATE INDEX idx_proposal_status ON proposal(status);
 COMMENT ON TABLE `users` IS 'Stores user data including roles and authentication details.';
 COMMENT ON COLUMN `users`.`role` IS 'Defines the role of the user: student, moderator, admin, supervisor.';
 COMMENT ON TABLE `goals` IS 'Stores goals for students assigned to supervisors.';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chats`
+--
+
+CREATE TABLE `chats` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `chats`
+--
+
+INSERT INTO `chats` (`id`, `sender_id`, `receiver_id`, `message`, `created_at`) VALUES
+(1, 3, 5, 'Hello Dr. Vijaya, I need your guidance on my project.', '2025-01-20 02:15:00'),
+(2, 5, 3, 'Sure, let’s schedule a meeting to discuss.', '2025-01-20 02:20:00'),
+(3, 3, 6, 'Hi Xi, can you review my proposal draft?', '2025-01-21 06:30:00'),
+(4, 6, 3, 'Of course, please send it to me.', '2025-01-21 06:35:00');
+
+-- --------------------------------------------------------
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `chats`
+--
+ALTER TABLE `chats`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `chats`
+--
+ALTER TABLE `chats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `chats`
+--
+ALTER TABLE `chats`
+  ADD CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `chats_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 COMMIT;
 
