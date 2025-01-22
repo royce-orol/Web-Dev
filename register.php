@@ -6,6 +6,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$error = ""; // Initialize the error variable
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
@@ -65,12 +67,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - FYP Management System</title>
     <link rel="stylesheet" href="css/register.css">
+    <style>
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f44336;
+            /* Red background */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            font-size: 14px;
+            text-align: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .notification.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Title -->
@@ -83,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label for="last_name">Last Name</label>
             <input type="text" id="last_name" name="last_name" required>
-            
+
             <label for="student_id">Student ID</label>
             <input type="text" id="student_id" name="student_id" required>
 
@@ -98,12 +128,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <button type="submit">Register</button>
 
-            <?php if (isset($error)): ?>
-                <p class="error"><?php echo htmlspecialchars($error); ?></p>
-            <?php endif; ?>
-
             <p>Already have an account? <a href="login.php">Log in here</a></p>
         </form>
     </div>
+
+    <!-- Notification -->
+    <?php if (!empty($error)): ?>
+        <div class="notification" id="notification">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
+
+    <script>
+        // Automatically hide the notification after 2 seconds
+        window.onload = function() {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 2000);
+            }
+        };
+    </script>
 </body>
+
 </html>

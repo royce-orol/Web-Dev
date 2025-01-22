@@ -4,14 +4,8 @@ include('../db_connection.php'); // Adjusted for consistent relative path
 
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Query to fetch supervisors and their emails
-$sql = "SELECT first_name, last_name, email FROM users WHERE role = 'supervisor'";
+// Query to fetch supervisors' names (combined first and last name) and their emails
+$sql = "SELECT CONCAT(first_name, ' ', last_name) AS name, email FROM users WHERE role = 'supervisor'";
 
 $result = $conn->query($sql);
 ?>
@@ -24,6 +18,55 @@ $result = $conn->query($sql);
     <title>View Supervisors</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            font-size: 16px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+
+        .dashboard-main {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -32,13 +75,13 @@ $result = $conn->query($sql);
         <?php include '../includes/sidebar.php'; ?>
 
         <div class="dashboard-main">
-            <h1>View Supervisors</h1>
+            <h1>View List of Supervisors</h1>
 
             <!-- Display supervisors in a table -->
             <table>
                 <thead>
                     <tr>
-                        <th>First Name</th>
+                        <th>Name</th>
                         <th>Email</th>
                     </tr>
                 </thead>
@@ -46,13 +89,13 @@ $result = $conn->query($sql);
                     <?php if ($result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="2">No supervisors found.</td>
+                            <td colspan="2" class="no-data">No supervisors found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

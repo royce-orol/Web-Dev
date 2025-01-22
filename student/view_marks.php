@@ -1,19 +1,11 @@
 <?php
 // Start the session
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 
 // Include the database connection
-include('../db_connection.php'); // Adjusted for consistent relative path
+include('../db_connection.php');
 
-// Check if the user is logged in and has the right role (student, admin, etc.)
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    header("Location: login.php");
-    exit;
-}
+
 
 // Fetch the student ID from the session
 $student_id = $_SESSION['user_id'];
@@ -28,14 +20,9 @@ $stmt->bind_param("i", $student_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetch the data and check if any rows are returned
-if ($result->num_rows > 0) {
-    $proposal = $result->fetch_assoc();
-} else {
-    $proposal = null;
-}
+// Fetch the data
+$proposal = ($result->num_rows > 0) ? $result->fetch_assoc() : null;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,7 +44,7 @@ if ($result->num_rows > 0) {
             <?php if ($proposal): ?>
                 <div class="marks-details">
                     <p><strong>Project Title:</strong> <?php echo htmlspecialchars($proposal['title']); ?></p>
-                    <p><strong>Your Final Year Project Marks:</strong> <?php echo htmlspecialchars($proposal['marks']); ?> / 100</p>
+                    <p><strong>Your Final Year Project Marks:</strong> <?php  echo htmlspecialchars($proposal['marks'] ?? 'Not yet assigned'); ?> / 100</p>
                 </div>
             <?php else: ?>
                 <p>No approved proposal found or marks not assigned yet.</p>

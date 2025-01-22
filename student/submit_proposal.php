@@ -1,53 +1,3 @@
-<?php
-session_start();
-session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Retrieve user details
-$first_name = $_SESSION['first_name'];
-$last_name = $_SESSION['last_name'];
-
-// Initialize success and error messages
-$success_message = "";
-$error_message = "";
-
-include('../db_connection.php'); // Adjusted for consistent relative path
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the submitted proposal data
-    $proposal_title = trim($_POST['proposal_title']);
-    $proposal_description = trim($_POST['proposal_description']);
-
-    // Save proposal to the database
-    if ($proposal_title && $proposal_description) {
-        // Database logic for inserting the proposal
-        $stmt = $conn->prepare("INSERT INTO proposal (sender_id, title, description) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $_SESSION['user_id'], $proposal_title, $proposal_description);
-
-        if ($stmt->execute()) {
-            $success_message = "Your proposal has been submitted successfully!";
-        } else {
-            $error_message = "Error submitting your proposal. Please try again.";
-        }
-
-        $stmt->close();
-    } else {
-        $error_message = "Please fill in all fields.";
-    }
-}
-
-// Close the database connection
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +6,86 @@ $conn->close();
     <title>Submit Proposal</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .dashboard-main {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -66,21 +96,63 @@ $conn->close();
         <div class="dashboard-main">
             <h1>Submit Proposal</h1>
 
-            <!-- Display success or error message -->
-            <?php if (!empty($success_message)): ?>
-                <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
-            <?php endif; ?>
-            <?php if (!empty($error_message)): ?>
-                <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
+            <?php
+            // Initialize variables
+            $successMessage = "";
+            $errorMessage = "";
+
+            // Check if form data is available via GET
+            if (isset($_GET['proposal_title']) && isset($_GET['proposal_description'])) {
+                // Database credentials
+                $host = 'localhost'; // Change as needed
+                $db = 'web_dev';     // Database name
+                $user = 'root';      // Database username
+                $password = '';      // Database password
+
+                // Connect to the database
+                $conn = new mysqli($host, $user, $password, $db);
+
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // Get form data
+                $proposalTitle = $conn->real_escape_string($_GET['proposal_title']);
+                $proposalDescription = $conn->real_escape_string($_GET['proposal_description']);
+
+                // Insert data into the proposal table
+                $sql = "INSERT INTO proposal (title, description) VALUES ('$proposalTitle', '$proposalDescription')";
+
+                if ($conn->query($sql) === TRUE) {
+                    $successMessage = "Your proposal has been sent successfully!";
+                } else {
+                    $errorMessage = "Error: " . $conn->error;
+                }
+
+                // Close the connection
+                $conn->close();
+            }
+            ?>
+
+            <!-- Display success or error messages -->
+            <?php if (!empty($successMessage)): ?>
+                <div class="success-message">
+                    <?php echo $successMessage; ?>
+                </div>
             <?php endif; ?>
 
-            <!-- Proposal form -->
-            <form method="POST">
+            <?php if (!empty($errorMessage)): ?>
+                <div class="error-message"><?php echo $errorMessage; ?></div>
+            <?php endif; ?>
+
+            <!-- Form is always visible after GET -->
+            <form method="GET">
                 <label for="proposal_title">Proposal Title:</label>
-                <input type="text" id="proposal_title" name="proposal_title" required>
+                <input type="text" id="proposal_title" name="proposal_title" placeholder="Enter your proposal title" required>
 
                 <label for="proposal_description">Proposal Description:</label>
-                <textarea id="proposal_description" name="proposal_description" required></textarea>
+                <textarea id="proposal_description" name="proposal_description" placeholder="Describe your proposal" required></textarea>
 
                 <button type="submit">Submit Proposal</button>
             </form>
