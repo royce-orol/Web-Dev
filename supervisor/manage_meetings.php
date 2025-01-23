@@ -54,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
     $stmt->execute();
     $stmt->close();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -92,8 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
                                 <td><?php echo htmlspecialchars($meeting['student_name']); ?></td>
                                 <td><?php echo htmlspecialchars($meeting['meeting_date']); ?></td>
                                 <td><?php echo htmlspecialchars($meeting['meeting_time']); ?></td>
-                                <td><?php echo htmlspecialchars(ucfirst($meeting['status'])); ?></td>
                                 <td>
+                                    <!-- Status will display capitalized first letter of the status -->
+                                    <?php echo htmlspecialchars(ucfirst($meeting['status'])); ?>
+                                </td>
+                                <td>
+                                    <!-- Actions only show if the meeting status is "pending" -->
                                     <?php if ($meeting['status'] === 'pending'): ?>
                                         <form action="manage_meetings.php" method="POST" style="display:inline;">
                                             <input type="hidden" name="meeting_id" value="<?php echo $meeting['meeting_id']; ?>">
@@ -103,6 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
                                             <input type="hidden" name="meeting_id" value="<?php echo $meeting['meeting_id']; ?>">
                                             <button type="submit" name="status" value="rejected" class="btn">Reject</button>
                                         </form>
+                                    <?php else: ?>
+                                        <!-- Show status if it's not "pending" -->
+                                        <span class="status"><?php echo ucfirst($meeting['status']); ?></span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -121,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
             <form action="manage_meetings.php" method="POST">
                 <div class="form-group">
                     <label for="student_id">Student:</label>
-                    <select name="student_id" id="student_id" required>
+                    <select name="student_id" id="student_id" >
                         <?php
                         // Fetch all students assigned to this supervisor from the proposal table
                         $query = "SELECT u.id, u.first_name, u.last_name 
@@ -151,4 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
                 </div>
 
                 <button type="submit" name="submit_meeting" class="btn btn-primary">Submit</button>
-
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,37 +1,3 @@
-<?php
-// Start the session
-session_start();
-
-// Include database connection
-include('../db_connection.php'); // Adjusted for consistent relative path
-
-
-// Get student ID from session
-$student_id = $_SESSION['user_id'];
-
-// Query to fetch project details with proposal status
-$sql = "SELECT 
-            p.proposal_id AS project_id,
-            p.title AS project_title,
-            p.status AS proposal_status,
-            pr.date AS presentation_date,
-            u.student_id AS student_id
-        FROM 
-            proposal p
-        LEFT JOIN 
-            presentation pr ON p.proposal_id = pr.proposal_id
-        LEFT JOIN 
-            users u ON p.sender_id = u.id
-        WHERE 
-            p.sender_id = ?"; // Only fetch projects related to the logged-in student
-
-// Prepare and execute the query
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $student_id); // Bind the student ID to the query
-$stmt->execute();
-$result = $stmt->get_result(); // Fetch the result of the query
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +6,61 @@ $result = $stmt->get_result(); // Fetch the result of the query
     <title>View Projects</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+        }
+
+        .dashboard-main {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?> <!-- Include header -->
@@ -49,7 +70,7 @@ $result = $stmt->get_result(); // Fetch the result of the query
 
         <div class="dashboard-main">
             <h1>View Projects</h1>
-            
+
             <!-- Display projects in a table -->
             <table>
                 <thead>
@@ -71,7 +92,6 @@ $result = $stmt->get_result(); // Fetch the result of the query
                                 <td><?php echo htmlspecialchars($row['proposal_status']); ?></td>
                                 <td>
                                     <?php 
-                                    // Check if the presentation date exists, if not display 'Not Scheduled'
                                     echo $row['presentation_date'] 
                                         ? htmlspecialchars($row['presentation_date']) 
                                         : 'Not Scheduled'; 
@@ -81,7 +101,7 @@ $result = $stmt->get_result(); // Fetch the result of the query
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">No projects found.</td> <!-- Message if no projects are found -->
+                            <td colspan="5" class="no-data">No projects found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

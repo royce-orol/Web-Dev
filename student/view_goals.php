@@ -1,37 +1,3 @@
-<?php
-// Start the session to access session variables
-session_start();
-
-// Include the database connection file
-include('../db_connection.php');
-
-
-// Get the logged-in student's ID from the session
-$student_id = $_SESSION['user_id'];
-
-// Check if the form has been submitted via POST method
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve the goal ID from the submitted form
-    $goal_id = $_POST['goal_id'];
-    // Determine if the "is_completed" checkbox was checked (1 for true, 0 for false)
-    $is_completed = isset($_POST['is_completed']) ? 1 : 0;
-
-    // Prepare the SQL query to update the goal's completion status
-    $stmt = $conn->prepare("UPDATE goals SET is_completed = ? WHERE goal_id = ? AND student_id = ?");
-    // Bind the parameters to the query: is_completed, goal_id, and student_id
-    $stmt->bind_param('iii', $is_completed, $goal_id, $student_id);
-    // Execute the prepared statement
-    $stmt->execute();
-}
-
-// Prepare a query to fetch all goals assigned to the logged-in student
-$stmt = $conn->prepare("SELECT goal_id, goal_title, goal_description, is_completed FROM goals WHERE student_id = ?");
-$stmt->bind_param('i', $student_id); // Bind the student_id to the query
-$stmt->execute(); // Execute the query
-$result = $stmt->get_result(); // Fetch the results of the query
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +11,69 @@ $result = $stmt->get_result(); // Fetch the results of the query
     <link rel="stylesheet" href="../css/dashboard.css">
     <!-- Link to the header's CSS file -->
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+        }
+
+        .dashboard-main {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+        }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <!-- Include the header file for navigation -->
@@ -77,9 +106,9 @@ $result = $stmt->get_result(); // Fetch the results of the query
                             <?php while ($row = $result->fetch_assoc()): ?>
                                 <tr>
                                     <!-- Display the goal title -->
-                                    <td><?php echo $row['goal_title']; ?></td>
+                                    <td><?php echo htmlspecialchars($row['goal_title']); ?></td>
                                     <!-- Display the goal description -->
-                                    <td><?php echo $row['goal_description']; ?></td>
+                                    <td><?php echo htmlspecialchars($row['goal_description']); ?></td>
                                     <!-- Display the goal status as "Completed" or "Not Completed" -->
                                     <td><?php echo $row['is_completed'] ? 'Completed' : 'Not Completed'; ?></td>
                                     <td>
@@ -96,7 +125,7 @@ $result = $stmt->get_result(); // Fetch the results of the query
                         <?php else: ?>
                             <!-- Message displayed if no goals are assigned -->
                             <tr>
-                                <td colspan="4">No goals have been assigned.</td>
+                                <td colspan="4" class="no-data">No goals have been assigned.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

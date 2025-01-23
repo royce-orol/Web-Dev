@@ -52,6 +52,128 @@ $result = $conn->query("SELECT proposal_id, title, description, status FROM prop
     <title>Assign Project</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            background-color: #fff;
+            padding-left: 0;
+        }
+
+        .dashboard-main {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 0;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-left: 20px;  /* Align the header text to the left */
+        }
+
+        .success-message {
+            color: green;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+
+        .error-message {
+            color: red;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+
+        .table-container {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;  /* Align the table container to the left */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color:wheat;
+            color: black;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .action-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+
+        .action-button:focus {
+            outline: none;
+        }
+
+        td button {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .dashboard-main {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .table-container {
+                margin-left: 10px; /* Adjust margin for smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?> <!-- Include header -->
