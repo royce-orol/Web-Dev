@@ -67,9 +67,8 @@
             <li><a href="/WebDevAsgn/admin/view_records.php">View Records</a></li>
             <li><a href="/WebDevAsgn/admin/add_admin.php">Add Admin</a></li>
             <li><a href="/WebDevAsgn/admin/add_moderator.php">Add Moderator</a></li>
-            <li><a href="/WebDevAsgn/admin/m_users.php">Manage Users</a></li>
-            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/admin/add_supervisor.php">Add Supervisor</a></li>
+            <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/chat.php">Chat</a></li>
 
         <?php endif; ?>

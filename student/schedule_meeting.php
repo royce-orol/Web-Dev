@@ -1,10 +1,10 @@
 <?php
 session_start();
-include '../db_connection.php'; // Database connection
+include 'db_connection.php'; // Database connection
 
 // Check if user is logged in and has the 'student' role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit;
 }
 
@@ -29,7 +29,7 @@ if ($stmt = $conn->prepare($query)) {
 
 // Fetch all meetings associated with the student
 $meetings = [];
-$query = "SELECT meeting_date, meeting_time, status FROM meetings WHERE student_id = ? 
+$query = "SELECT meeting_id, meeting_date, meeting_time, status FROM meetings WHERE student_id = ? 
           ORDER BY meeting_date DESC, meeting_time DESC";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $student_id);
@@ -65,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meeting Schedule</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/header.css">
     <style>
         table {
             width: 100%;
@@ -113,15 +113,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
         form button:hover {
             background-color: #0056b3;
         }
+        .feedback-table {
+            width: 100%;
+            margin: 0 auto;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
     <!-- Header and Sidebar -->
-    <?php include '../includes/header.php'; ?>
-    <div class="dashboard-container">
-        <?php include '../includes/sidebar.php'; ?>
+    <header>
+        <nav>
+            <!-- Your navigation bar here -->
+        </nav>
+    </header>
 
-        <!-- Main Content -->
+    <div class="dashboard-container">
+        <aside>
+            <!-- Your sidebar content here -->
+        </aside>
+
         <div class="dashboard-main">
             <h1>Schedule a Meeting</h1>
 
@@ -139,13 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
                     <button type="submit">Request Meeting</button>
                 </form>
             <?php else: ?>
-                <!-- Message if no supervisor is assigned -->
                 <p>No supervisor is assigned to you. Please contact your administrator.</p>
             <?php endif; ?>
 
             <hr>
 
-            <!-- Meeting Schedule Section -->
             <h2>Meeting Schedule</h2>
             <table>
                 <thead>
@@ -166,7 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <!-- Message if no meetings are scheduled -->
                         <tr>
                             <td colspan="3">No meeting requests yet.</td>
                         </tr>
@@ -177,6 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     </div>
 
     <!-- Footer -->
-    <?php include '../includes/footer.php'; ?>
+    <footer>
+        <!-- Your footer content here -->
+    </footer>
 </body>
 </html>

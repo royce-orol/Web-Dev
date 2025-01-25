@@ -2,19 +2,32 @@
 session_start();
 include '../db_connection.php';
 
-
 // Retrieve proposals where status is not approved
-$query = "SELECT p.proposal_id, u1.first_name AS sender_first_name, u1.last_name AS sender_last_name, 
-                 p.title, p.description, p.status, u2.first_name AS sv_first_name, u2.last_name AS sv_last_name, p.marks 
+$query = "SELECT 
+            p.proposal_id, 
+            u1.first_name AS sender_first_name, 
+            u1.last_name AS sender_last_name, 
+            p.title, 
+            p.description, 
+            p.status, 
+            u2.first_name AS sv_first_name, 
+            u2.last_name AS sv_last_name, 
+            p.marks 
           FROM proposal p 
           JOIN users u1 ON p.sender_id = u1.id 
           LEFT JOIN users u2 ON p.assigned_sv = u2.id 
           WHERE p.status != 'approved'
           ORDER BY p.proposal_id DESC";
+
 $result = $conn->query($query);
 
+// Check for errors in query execution
+if (!$result) {
+    die("Error retrieving proposals: " . $conn->error);
+}
+
 $proposals = [];
-if ($result && $result->num_rows > 0) {
+if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $proposals[] = $row;
     }
@@ -29,6 +42,26 @@ if ($result && $result->num_rows > 0) {
     <title>View Proposals</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -59,15 +92,15 @@ if ($result && $result->num_rows > 0) {
                                 <td><?php echo htmlspecialchars($proposal['sender_first_name']) . ' ' . htmlspecialchars($proposal['sender_last_name']); ?></td>
                                 <td><?php echo htmlspecialchars($proposal['title']); ?></td>
                                 <td><?php echo htmlspecialchars($proposal['description']); ?></td>
-                                <td><?php echo htmlspecialchars($proposal['status']); ?></td>
+                                <td><?php echo ucfirst(htmlspecialchars($proposal['status'])); ?></td>
                                 <td>
                                     <?php 
                                     echo $proposal['sv_first_name'] && $proposal['sv_last_name'] 
                                         ? htmlspecialchars($proposal['sv_first_name']) . ' ' . htmlspecialchars($proposal['sv_last_name']) 
-                                        : 'Not Assigned'; 
+                                        : '<em>Not Assigned</em>'; 
                                     ?>
                                 </td>
-                                <td><?php echo htmlspecialchars($proposal['marks']) ?? 'N/A'; ?></td>
+                                <td><?php echo $proposal['marks'] !== null ? htmlspecialchars($proposal['marks']) : '<em>N/A</em>'; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -80,4 +113,4 @@ if ($result && $result->num_rows > 0) {
 
     <?php include '../footer.php'; ?>
 </body>
-</html
+</html>

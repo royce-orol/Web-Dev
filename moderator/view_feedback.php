@@ -33,39 +33,47 @@ if ($result) {
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .feedback-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
             margin-top: 20px;
         }
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
+        .feedback-tile {
             background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 15px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
+        .feedback-tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .feedback-header {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .feedback-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .feedback-date {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
         }
 
         .feedback-table {
-            width: 100%;
-            margin: 0 auto;
-            max-width: 1000px;
-            overflow-x: auto;
+            display: none; /* Hide the original table */
         }
     </style>
 </head>
@@ -79,31 +87,24 @@ if ($result) {
             <h1>Feedback Records</h1>
 
             <?php if (!empty($feedbacks)): ?>
-                <div class="feedback-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Sender</th>
-                                <th>Message</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($feedbacks as $feedback): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($feedback['sender_first_name']) . ' ' . htmlspecialchars($feedback['sender_last_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($feedback['message']); ?></td>
-                                    <td>
-                                        <?php 
-                                        // Convert timestamp to human-readable format
-                                        $formattedDate = date("d F Y", strtotime($feedback['created_at']));
-                                        echo htmlspecialchars($formattedDate);
-                                        ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <div class="feedback-container">
+                    <?php foreach ($feedbacks as $feedback): ?>
+                        <div class="feedback-tile">
+                            <div class="feedback-header">
+                                <?php echo htmlspecialchars($feedback['sender_first_name']) . ' ' . htmlspecialchars($feedback['sender_last_name']); ?>
+                            </div>
+                            <div class="feedback-message">
+                                <?php echo htmlspecialchars($feedback['message']); ?>
+                            </div>
+                            <div class="feedback-date">
+                                <?php 
+                                // Convert timestamp to human-readable format
+                                $formattedDate = date("d F Y", strtotime($feedback['created_at']));
+                                echo htmlspecialchars($formattedDate);
+                                ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <p>No feedback records available.</p>
