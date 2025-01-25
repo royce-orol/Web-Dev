@@ -11,14 +11,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
 // Get logged-in student's ID
 $student_id = $_SESSION['user_id'];
 
-// Fetch the student's assigned supervisor ID
+// Fetch the student's assigned supervisor ID and supervisor's email
 $supervisor_id = null;
-$query = "SELECT assigned_sv FROM proposal WHERE sender_id = ?";
+$supervisor_email = null;
+$query = "SELECT u.email FROM studsuper ss 
+          JOIN users u ON ss.supervisor_id = u.id
+          WHERE ss.student_id = ?";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $student_id);
     $stmt->execute();
-    $stmt->bind_result($supervisor_id);
-    $stmt->fetch();
+    $stmt->bind_result($supervisor_email);
+    if ($stmt->fetch()) {
+        $supervisor_id = $stmt->insert_id; // Get the supervisor's ID if available
+    }
     $stmt->close();
 }
 
@@ -39,13 +44,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     $meeting_date = $_POST['meeting_date'];
     $meeting_time = $_POST['meeting_time'];
 
-    // Insert new meeting request into the database
+    // Insert new meeting request into the database with 'pending' status
     $query = "INSERT INTO meetings (student_id, assigned_sv_id, meeting_date, meeting_time, status) 
               VALUES (?, ?, ?, ?, 'pending')";
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param('iiss', $student_id, $supervisor_id, $meeting_date, $meeting_time);
         $stmt->execute();
         $stmt->close();
+        
+        // Reload the page to show the updated meeting schedule
+        header("Location: schedule_meeting.php");
+        exit;
     }
 }
 ?>
@@ -117,7 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
             <h1>Schedule a Meeting</h1>
 
             <!-- Check if supervisor is assigned -->
-            <?php if ($supervisor_id): ?>
+            <?php if ($supervisor_email): ?>
+                <p>Your assigned supervisor: <strong><?= htmlspecialchars($supervisor_email); ?></strong></p>
                 <!-- Meeting Request Form -->
                 <form action="schedule_meeting.php" method="POST">
                     <label for="meeting_date">Meeting Date:</label>

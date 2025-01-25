@@ -97,12 +97,14 @@
             <h1>Submit Proposal</h1>
 
             <?php
+            session_start();
+
             // Initialize variables
             $successMessage = "";
             $errorMessage = "";
 
-            // Check if form data is available via GET
-            if (isset($_GET['proposal_title']) && isset($_GET['proposal_description'])) {
+            // Check if form data is submitted
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Database credentials
                 $host = 'localhost'; // Change as needed
                 $db = 'web_dev';     // Database name
@@ -118,11 +120,14 @@
                 }
 
                 // Get form data
-                $proposalTitle = $conn->real_escape_string($_GET['proposal_title']);
-                $proposalDescription = $conn->real_escape_string($_GET['proposal_description']);
+                $proposalTitle = $conn->real_escape_string($_POST['proposal_title']);
+                $proposalDescription = $conn->real_escape_string($_POST['proposal_description']);
+                $senderId = $_SESSION['user_id']; // Assume user ID is stored in session
+                $status = 'pending';
+                $assignedSv = 0; // Default supervisor ID
 
                 // Insert data into the proposal table
-                $sql = "INSERT INTO proposal (title, description) VALUES ('$proposalTitle', '$proposalDescription')";
+                $sql = "INSERT INTO proposal (sender_id, title, description, status, assigned_sv) VALUES ('$senderId', '$proposalTitle', '$proposalDescription', '$status', '$assignedSv')";
 
                 if ($conn->query($sql) === TRUE) {
                     $successMessage = "Your proposal has been sent successfully!";
@@ -143,11 +148,13 @@
             <?php endif; ?>
 
             <?php if (!empty($errorMessage)): ?>
-                <div class="error-message"><?php echo $errorMessage; ?></div>
+                <div class="error-message">
+                    <?php echo $errorMessage; ?>
+                </div>
             <?php endif; ?>
 
-            <!-- Form is always visible after GET -->
-            <form method="GET">
+            <!-- Form for submitting proposals -->
+            <form method="POST">
                 <label for="proposal_title">Proposal Title:</label>
                 <input type="text" id="proposal_title" name="proposal_title" placeholder="Enter your proposal title" required>
 
