@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 25, 2025 at 10:40 AM
+-- Generation Time: Jan 27, 2025 at 03:57 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -32,14 +32,6 @@ CREATE TABLE `Announcements` (
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `Announcements`
---
-
-INSERT INTO `Announcements` (`id`, `description`) VALUES
-(8, 'This is an announcement'),
-(9, 'This is the 2nd announcement');
-
 -- --------------------------------------------------------
 
 --
@@ -62,13 +54,7 @@ INSERT INTO `chats` (`id`, `sender_id`, `receiver_id`, `message`, `created_at`) 
 (1, 3, 5, 'Hello Dr. Vijaya, I need your guidance on my project.', '2025-01-20 02:15:00'),
 (2, 5, 3, 'Sure, let’s schedule a meeting to discuss.', '2025-01-20 02:20:00'),
 (3, 3, 6, 'Hi Xi, can you review my proposal draft?', '2025-01-21 06:30:00'),
-(4, 6, 3, 'Of course, please send it to me.', '2025-01-21 06:35:00'),
-(5, 10, 13, 'hello', '2025-01-22 08:03:19'),
-(6, 13, 7, 'hello', '2025-01-22 08:43:56'),
-(7, 7, 13, 'hi', '2025-01-22 08:52:57'),
-(8, 13, 7, 'sibuk ke', '2025-01-22 09:06:01'),
-(9, 7, 13, 'hallo', '2025-01-22 09:10:00'),
-(10, 10, 5, 'yo ', '2025-01-25 08:28:18');
+(4, 6, 3, 'Of course, please send it to me.', '2025-01-21 06:35:00');
 
 -- --------------------------------------------------------
 
@@ -89,9 +75,7 @@ CREATE TABLE `feedback` (
 
 INSERT INTO `feedback` (`feedback_id`, `sender_id`, `message`, `created_at`) VALUES
 (1, 3, 'hiihihiih', '2024-12-26 04:46:52'),
-(2, 3, 'hiihihiih', '2024-12-26 04:50:53'),
-(3, 13, 'Hai', '2025-01-21 15:51:13'),
-(4, 3, 'Very Good', '2025-01-23 08:56:18');
+(2, 3, 'hiihihiih', '2024-12-26 04:50:53');
 
 -- --------------------------------------------------------
 
@@ -125,17 +109,6 @@ CREATE TABLE `meetings` (
   `status` enum('accepted','rejected','pending') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `meetings`
---
-
-INSERT INTO `meetings` (`meeting_id`, `student_id`, `assigned_sv_id`, `meeting_date`, `meeting_time`, `status`) VALUES
-(1, 3, 5, '2005-12-03', '15:42:00', 'accepted'),
-(2, 3, 5, '2024-12-31', '15:11:00', 'accepted'),
-(3, 3, 5, '2024-12-31', '15:11:00', 'accepted'),
-(4, 3, 5, '2025-01-23', '08:43:00', 'accepted'),
-(5, 3, 11, '2025-02-08', '21:23:00', 'pending');
-
 -- --------------------------------------------------------
 
 --
@@ -151,14 +124,6 @@ CREATE TABLE `presentation` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `presentation`
---
-
-INSERT INTO `presentation` (`id`, `proposal_id`, `student_id`, `date`, `time`, `created_at`, `updated_at`) VALUES
-(1, 4, 13, '2025-02-01', '22:34:00', '2025-01-24 11:32:00', '2025-01-24 11:32:00'),
-(2, 4, 13, '2025-01-30', '20:21:00', '2025-01-25 08:16:20', '2025-01-25 08:16:20');
 
 -- --------------------------------------------------------
 
@@ -184,9 +149,7 @@ CREATE TABLE `proposal` (
 
 INSERT INTO `proposal` (`proposal_id`, `sender_id`, `title`, `description`, `status`, `created_at`, `updated_at`, `assigned_sv`, `marks`) VALUES
 (1, 3, 'HIV Treatment Prediction', 'Project predicting HIV Treatments', 'approved', '2024-12-26 05:13:22', '2024-12-30 08:59:07', 5, NULL),
-(2, 3, 'HTML AI', 'HTML DEVELOPMENT USING AI', 'approved', '2024-12-30 09:06:11', '2024-12-30 09:06:33', 5, NULL),
-(3, 3, 'Tester 1', 'Tester pertama', 'approved', '2025-01-23 10:37:17', '2025-01-23 10:38:49', 11, NULL),
-(4, 13, 'Assignment 1 ', 'This is the first assignement ever', 'approved', '2025-01-24 10:49:39', '2025-01-24 10:49:59', 5, NULL);
+(2, 3, 'HTML AI', 'HTML DEVELOPMENT USING AI', 'approved', '2024-12-30 09:06:11', '2024-12-30 09:06:33', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -199,17 +162,6 @@ CREATE TABLE `studsuper` (
   `student_id` int(11) NOT NULL,
   `supervisor_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `studsuper`
---
-
-INSERT INTO `studsuper` (`id`, `student_id`, `supervisor_id`) VALUES
-(1, 17, 5),
-(2, 15, 5),
-(3, 13, 5),
-(4, 13, 11),
-(5, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -242,12 +194,7 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `student_id`, `pa
 (9, 'Adi', 'Zuhairi', 'student@gmail.com', '1201103071', '$2y$10$nugE6r0vf25wh27QP0xgKukbEWklQaRW6lXUxpTyvW4kMuMABspK2', 'student', '2025-01-12 07:27:05', 'active'),
 (10, 'Admin', '', 'admin@gmail.com', '1211102758', '$2y$10$RMU1YBf5fGcpbteqmePfMe5DgPuaYnaUAWlBPnfxE8yYI3i6t8r36', 'admin', '2025-01-12 07:31:54', 'active'),
 (11, 'Supervisor', '.', 'supervisor@gmail.com', '123131213', '$2y$10$eCp7Gi3Rhk1yx/YF0mIFMuUOLlqXaowUJ6MIuazxjTGfesaj0Llea', 'supervisor', '2025-01-12 07:32:19', 'active'),
-(12, 'Moderator', '', 'moderator@gmail.com', '1221303444', '$2y$10$DsW4.9hlG8do.BzRfd33ye506y/gnIGX.uP8CnpvyuGswBbzQUw8W', 'moderator', '2025-01-12 07:43:26', 'active'),
-(13, 'Ammar', 'Ajwad', 'm.ammarajwad@gmail.com', '12113039991', '$2y$10$/03RMTs//MLvrJKm0bcIieHGe5fWOieiaSYsabVPANM5xzFRIM1ee', 'student', '2025-01-16 03:23:10', 'active'),
-(14, 'Albab', 'Ajwad', 'encikwad@gmail.com', '1211309881', '$2y$10$Hru8F9Q2LbjsFA7ETVVrdu2k83GU39A/mMPNaIfp3isioI1Vl1B3O', 'student', '2025-01-16 03:33:43', 'active'),
-(15, 'Kawa ', 'saki', 'Entah@gmail.com', '123456789', '$2y$10$i3lZdv6udNHHgq.2Dz0.3eG1T3R9KuzvsCLtewgNcLUouTbCDU3im', 'student', '2025-01-19 11:32:52', 'active'),
-(16, 'Admin2', '', 'admin2@gmail.com', '1211303991', '123456789', 'admin', '2025-01-19 12:42:58', 'active'),
-(17, 'Kaido', 'Ajwad', 'kais@gmail.com', '11111122121', '$2y$10$MM3TUIa26gcHxpqLKPewh.2NhS7vc.nZ4ubxd0x4p9aUFLW7V7xrS', 'student', '2025-01-21 09:35:25', 'active');
+(12, 'Moderator', '', 'moderator@gmail.com', '1221303444', '$2y$10$DsW4.9hlG8do.BzRfd33ye506y/gnIGX.uP8CnpvyuGswBbzQUw8W', 'moderator', '2025-01-12 07:43:26', 'active');
 
 --
 -- Indexes for dumped tables
@@ -335,7 +282,7 @@ ALTER TABLE `Announcements`
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -347,25 +294,25 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `goals`
 --
 ALTER TABLE `goals`
-  MODIFY `goal_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `goal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `meetings`
 --
 ALTER TABLE `meetings`
-  MODIFY `meeting_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `meeting_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `presentation`
 --
 ALTER TABLE `presentation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `proposal`
 --
 ALTER TABLE `proposal`
-  MODIFY `proposal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `proposal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `studsuper`
