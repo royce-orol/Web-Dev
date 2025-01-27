@@ -159,9 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Form to create a new goal -->
             <form method="POST" class="form-container">
                 <label for="student_id">Select Student:</label>
-                <select name="student_id" id="student_id" required>
+                <select name="student_id" id="student_id" required onchange="enableFormFields()">
                     <option value="">-- Select Student --</option>
-                    <?php 
+                    <?php
                     // Loop through the fetched students and display them in the dropdown
                     while ($student = $students->fetch_assoc()): ?>
                         <option value="<?php echo htmlspecialchars($student['id']); ?>">
@@ -178,8 +178,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="goal_description">Goal Description:</label>
                 <textarea name="goal_description" id="goal_description" required disabled></textarea>
 
-                <button type="submit" class="action-button" disabled>Create Goal</button>
-                
+                <button type="submit" class="action-button" disabled id="submitButton">Create Goal</button>
+
                 <!-- Question icon for no students assigned -->
                 <?php if ($no_students): ?>
                     <span class="question-icon" onclick="showModal()">?</span>
@@ -190,11 +190,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!-- Modal for no students assigned -->
     <div class="modal" id="noStudentsModal">
-        <span class="close" onclick="closeModal()">&times;</span>
+        <span class="close" onclick="closeModal()">×</span>
         <p>No students have been assigned to you. Please ensure that students are assigned in the system.</p>
     </div>
 
     <script>
+        // Enable form fields when a student is selected
+        function enableFormFields() {
+            var studentIdSelect = document.getElementById('student_id');
+            var goalTitleInput = document.getElementById('goal_title');
+            var goalDescriptionTextarea = document.getElementById('goal_description');
+            var submitButton = document.getElementById('submitButton');
+
+            if (studentIdSelect.value !== "") {
+                goalTitleInput.disabled = false;
+                goalDescriptionTextarea.disabled = false;
+                submitButton.disabled = false;
+            } else {
+                goalTitleInput.disabled = true;
+                goalDescriptionTextarea.disabled = true;
+                submitButton.disabled = true;
+            }
+        }
+
         // Show modal
         function showModal() {
             document.getElementById('noStudentsModal').style.display = 'block';

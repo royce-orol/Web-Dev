@@ -86,6 +86,8 @@ $result = $conn->query("SELECT proposal_id, title, description, status FROM prop
             padding: 10px;
             border-radius: 5px;
             margin-left: 20px;
+            margin-bottom: 10px; /* Add margin bottom for spacing */
+            display: block; /* Ensure it takes full width */
         }
 
         .error-message {
@@ -94,6 +96,8 @@ $result = $conn->query("SELECT proposal_id, title, description, status FROM prop
             padding: 10px;
             border-radius: 5px;
             margin-left: 20px;
+            margin-bottom: 10px; /* Add margin bottom for spacing */
+            display: block; /* Ensure it takes full width */
         }
 
         .table-container {
@@ -112,65 +116,86 @@ $result = $conn->query("SELECT proposal_id, title, description, status FROM prop
         }
 
         th, td {
-            padding: 12px;
+            padding: 12px 15px; /* Increased padding for better spacing */
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ddd; /* Lighter border */
         }
 
         th {
-            background-color:wheat;
-            color: black;
+            background-color: #f4f4f4; /* Light grey header */
+            color: #333; /* Darker header text */
             font-weight: bold;
+            text-transform: uppercase; /* Optional: Uppercase headers */
+            letter-spacing: 0.6px; /* Optional: Letter spacing */
         }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Very light grey for even rows */
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
+        tbody tr:hover {
+            background-color: #e6e6e6; /* Light grey on hover */
+        }
+
+        td:last-child {
+            text-align: center; /* Center action buttons in the last column */
         }
 
         .action-button {
-            background-color: #007bff;
+            background-color: #007bff; /* Blue button color */
             color: white;
-            padding: 8px 16px;
+            padding: 10px 15px; /* Slightly larger buttons */
             border: none;
             cursor: pointer;
-            border-radius: 4px;
-            text-align: center;
+            border-radius: 5px; /* Rounded corners */
+            font-size: 0.9em;
+            font-weight: bold; /* Bold button text */
+            letter-spacing: 0.5px; /* Letter spacing for buttons */
+            text-transform: uppercase; /* Uppercase button text */
         }
 
         .action-button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker blue on hover */
         }
 
         .action-button:focus {
-            outline: none;
+            outline: none; /* Remove default focus outline */
+            box-shadow: 0 0 0 2px rgba(0,123,255,.5); /* Add focus indication */
         }
 
         td button {
             padding: 8px 16px;
-            font-size: 14px;
+            font-size: 14px; /* Keep button font size consistent */
         }
 
-        /* Responsive design */
+        /* Responsive design adjustments for smaller screens */
         @media (max-width: 768px) {
             .dashboard-main {
                 margin-left: 0;
                 padding: 10px;
             }
 
+            h1 {
+                font-size: 22px; /* Slightly smaller header on smaller screens */
+                padding-left: 10px; /* Adjust header padding */
+            }
+
+            .success-message, .error-message, .table-container {
+                margin-left: 10px; /* Adjust message and table margins */
+                margin-right: 10px;
+            }
+
             table {
-                font-size: 14px;
+                font-size: 14px; /* Smaller font size for table text */
             }
 
             th, td {
-                padding: 8px;
+                padding: 10px; /* Adjust cell padding */
             }
 
-            .table-container {
-                margin-left: 10px; /* Adjust margin for smaller screens */
+            .action-button {
+                padding: 7px 12px; /* Slightly smaller buttons on smaller screens */
+                font-size: 0.8em;
             }
         }
     </style>
@@ -208,7 +233,7 @@ $result = $conn->query("SELECT proposal_id, title, description, status FROM prop
                                     <td><?php echo htmlspecialchars($row['title']); ?></td>
                                     <td><?php echo htmlspecialchars($row['description']); ?></td>
                                     <td><?php echo htmlspecialchars($row['status']); ?></td>
-                                    <td>
+                                    <td class="action-cell"> <!-- Added class for action cell if needed -->
                                         <form method="POST" style="display:inline;">
                                             <input type="hidden" name="assign_proposal_id" value="<?php echo htmlspecialchars($row['proposal_id']); ?>">
                                             <button type="submit" class="action-button">Assign</button>

@@ -3,7 +3,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: ../login.php"); // Corrected path to login.php
     exit;
 }
 
@@ -12,35 +12,45 @@ include('../db_connection.php');
 
 $user_id = $_SESSION['user_id'];
 
+// Initialize messages
+$success_message = null;
+$error_message = null;
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $proposal_id = $_POST['proposal_id'];
     $date = $_POST['date'];
     $time = $_POST['time'];
 
-    // Retrieve the student_id based on the proposal's sender_id
-    $sql = "SELECT sender_id FROM proposal WHERE proposal_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $proposal_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $proposal = $result->fetch_assoc();
-
-    if ($proposal) {
-        $student_id = $proposal['sender_id']; // Assume sender_id matches user_id from users table
-
-        // Insert presentation booking into the database
-        $sql = "INSERT INTO presentation (proposal_id, student_id, date, time) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iiss", $proposal_id, $student_id, $date, $time);
-
-        if ($stmt->execute()) {
-            $success_message = "Presentation booked successfully.";
-        } else {
-            $error_message = "Error booking the presentation. Please try again.";
-        }
+    // Validate if the date is not in the past
+    $current_date = date("Y-m-d"); // Get current date in YYYY-MM-DD format
+    if ($date < $current_date) {
+        $error_message = "You cannot book a presentation for a past date. Please select a future date.";
     } else {
-        $error_message = "Invalid proposal selected.";
+        // Retrieve the student_id based on the proposal's sender_id
+        $sql = "SELECT sender_id FROM proposal WHERE proposal_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $proposal_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $proposal = $result->fetch_assoc();
+
+        if ($proposal) {
+            $student_id = $proposal['sender_id']; // Assume sender_id matches user_id from users table
+
+            // Insert presentation booking into the database
+            $sql = "INSERT INTO presentation (proposal_id, student_id, date, time) VALUES (?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("iiss", $proposal_id, $student_id, $date, $time);
+
+            if ($stmt->execute()) {
+                $success_message = "Presentation booked successfully.";
+            } else {
+                $error_message = "Error booking the presentation. Please try again.";
+            }
+        } else {
+            $error_message = "Invalid proposal selected.";
+        }
     }
 }
 
@@ -61,6 +71,58 @@ $proposal = $result->fetch_assoc();
     <title>Book Presentation</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
+    <style>
+        .message-container {
+            margin-bottom: 20px;
+        }
+        .success-message {
+            color: green;
+            background-color: #e6ffe6; /* Light green background */
+            padding: 10px;
+            border: 1px solid green;
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            background-color: #ffe6e6; /* Light red background */
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+        }
+        .presentation-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .presentation-form input[type="date"],
+        .presentation-form input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* To include padding and border in width */
+        }
+        .presentation-form button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .presentation-form button:hover {
+            background-color: #0056b3;
+        }
+        .no-proposal-message {
+            font-style: italic;
+            color: #777;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -69,29 +131,31 @@ $proposal = $result->fetch_assoc();
         <div class="dashboard-main">
             <h1>Book Presentation</h1>
 
-            <?php if (isset($success_message)): ?>
-                <p style="color: green;"><?= htmlspecialchars($success_message); ?></p>
-            <?php endif; ?>
+            <div class="message-container">
+                <?php if ($success_message): ?>
+                    <p class="success-message"><?= htmlspecialchars($success_message); ?></p>
+                <?php endif; ?>
 
-            <?php if (isset($error_message)): ?>
-                <p style="color: red;"><?= htmlspecialchars($error_message); ?></p>
-            <?php endif; ?>
+                <?php if ($error_message): ?>
+                    <p class="error-message"><?= htmlspecialchars($error_message); ?></p>
+                <?php endif; ?>
+            </div>
 
             <?php if ($proposal): ?>
-                <form action="book_presentation.php" method="POST">
+                <form action="book_presentation.php" method="POST" class="presentation-form">
                     <p><strong>Proposal:</strong> <?= htmlspecialchars($proposal['title']); ?></p>
                     <input type="hidden" name="proposal_id" value="<?= htmlspecialchars($proposal['proposal_id']); ?>">
 
                     <label for="date">Select Date:</label>
-                    <input type="date" name="date" required>
+                    <input type="date" name="date" id="date" required>
 
                     <label for="time">Select Time:</label>
-                    <input type="time" name="time" required>
+                    <input type="time" name="time" id="time" required>
 
                     <button type="submit">Book Presentation</button>
                 </form>
             <?php else: ?>
-                <p>No approved proposal is available for booking.</p>
+                <p class="no-proposal-message">No approved proposal is available for booking.</p>
             <?php endif; ?>
         </div>
     </div>

@@ -1,3 +1,43 @@
+<?php
+session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include('../db_connection.php');
+
+// Check if the user is logged in (you might need to adjust this based on your actual login system)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php"); // Redirect to login page if not logged in
+    exit;
+}
+
+$student_id = $_SESSION['user_id']; // Get the logged-in student's ID
+
+// Handle goal completion update
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['goal_id']) && isset($_POST['is_completed'])) {
+        $goal_id = intval($_POST['goal_id']);
+        $is_completed = isset($_POST['is_completed']) ? 1 : 0; // Convert checkbox to 1 or 0
+
+        // Update the goal status in the database
+        $update_query = "UPDATE goals SET is_completed = ? WHERE goal_id = ?";
+        $update_stmt = $conn->prepare($update_query);
+        $update_stmt->bind_param('ii', $is_completed, $goal_id);
+        $update_stmt->execute();
+        $update_stmt->close();
+    }
+}
+
+// Fetch goals for the logged-in student
+$query = "SELECT goal_id, goal_title, goal_description, is_completed FROM goals WHERE student_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('i', $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -135,6 +175,6 @@
     </div>
 
     <!-- Include the footer file -->
-    <?php include '../footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>

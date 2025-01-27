@@ -2,21 +2,20 @@
 session_start();
 include '../db_connection.php';
 
-// Retrieve proposals where status is not approved
-$query = "SELECT 
-            p.proposal_id, 
-            u1.first_name AS sender_first_name, 
-            u1.last_name AS sender_last_name, 
-            p.title, 
-            p.description, 
-            p.status, 
-            u2.first_name AS sv_first_name, 
-            u2.last_name AS sv_last_name, 
-            p.marks 
-          FROM proposal p 
-          JOIN users u1 ON p.sender_id = u1.id 
-          LEFT JOIN users u2 ON p.assigned_sv = u2.id 
-          WHERE p.status != 'approved'
+// Retrieve proposals from the proposal table
+$query = "SELECT
+            p.proposal_id,
+            u1.first_name AS sender_first_name,
+            u1.last_name AS sender_last_name,
+            p.title,
+            p.description,
+            p.status,
+            u2.first_name AS sv_first_name,
+            u2.last_name AS sv_last_name,
+            p.marks
+          FROM proposal p
+          JOIN users u1 ON p.sender_id = u1.id
+          LEFT JOIN users u2 ON p.assigned_sv = u2.id
           ORDER BY p.proposal_id DESC";
 
 $result = $conn->query($query);
@@ -43,23 +42,54 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+        /* Tile container styling */
+        .proposals-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow tiles to wrap to the next line */
+            justify-content: flex-start; /* Align tiles to the start */
+            gap: 20px; /* Spacing between tiles */
+            margin-top: 20px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+
+        /* Individual proposal tile styling */
+        .proposal-tile {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: calc(33% - 20px); /* Adjust width for 3 tiles per row with gap */
+            min-width: 300px; /* Minimum width for each tile */
+            box-sizing: border-box; /* Include padding and border in width */
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
+
+        .proposal-tile h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
         }
-        th {
-            background-color: #f4f4f4;
+
+        .proposal-tile p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 0.9em;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+
+        .proposal-tile p strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Responsive adjustments for tile layout */
+        @media (max-width: 1000px) {
+            .proposal-tile {
+                width: calc(50% - 20px); /* 2 tiles per row on medium screens */
+            }
+        }
+
+        @media (max-width: 700px) {
+            .proposal-tile {
+                width: 100%; /* 1 tile per row on small screens */
+            }
         }
     </style>
 </head>
@@ -72,42 +102,27 @@ if ($result->num_rows > 0) {
         <div class="dashboard-main">
             <h1>Proposals</h1>
 
-            <?php if (!empty($proposals)): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Proposal ID</th>
-                            <th>Sender</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Supervisor</th>
-                            <th>Marks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($proposals as $proposal): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($proposal['proposal_id']); ?></td>
-                                <td><?php echo htmlspecialchars($proposal['sender_first_name']) . ' ' . htmlspecialchars($proposal['sender_last_name']); ?></td>
-                                <td><?php echo htmlspecialchars($proposal['title']); ?></td>
-                                <td><?php echo htmlspecialchars($proposal['description']); ?></td>
-                                <td><?php echo ucfirst(htmlspecialchars($proposal['status'])); ?></td>
-                                <td>
-                                    <?php 
-                                    echo $proposal['sv_first_name'] && $proposal['sv_last_name'] 
-                                        ? htmlspecialchars($proposal['sv_first_name']) . ' ' . htmlspecialchars($proposal['sv_last_name']) 
-                                        : '<em>Not Assigned</em>'; 
-                                    ?>
-                                </td>
-                                <td><?php echo $proposal['marks'] !== null ? htmlspecialchars($proposal['marks']) : '<em>N/A</em>'; ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No proposals available.</p>
-            <?php endif; ?>
+            <div class="proposals-container">
+                <?php if (!empty($proposals)): ?>
+                    <?php foreach ($proposals as $proposal): ?>
+                        <div class="proposal-tile">
+                            <h3><?php echo htmlspecialchars($proposal['title']); ?></h3>
+                            <p><strong>Proposal ID:</strong> <?php echo htmlspecialchars($proposal['proposal_id']); ?></p>
+                            <p><strong>Sender:</strong> <?php echo htmlspecialchars($proposal['sender_first_name']) . ' ' . htmlspecialchars($proposal['sender_last_name']); ?></p>
+                            <p><strong>Status:</strong> <?php echo ucfirst(htmlspecialchars($proposal['status'])); ?></p>
+                            <p><strong>Supervisor:</strong> <?php
+                                echo $proposal['sv_first_name'] && $proposal['sv_last_name']
+                                    ? htmlspecialchars($proposal['sv_first_name']) . ' ' . htmlspecialchars($proposal['sv_last_name'])
+                                    : '<em>Not Assigned</em>';
+                            ?></p>
+                            <p><strong>Marks:</strong> <?php echo $proposal['marks'] !== null ? htmlspecialchars($proposal['marks']) : '<em>N/A</em>'; ?></p>
+                            <p><strong>Description:</strong> <?php echo htmlspecialchars(substr($proposal['description'], 0, 100)) . '...'; ?></p> <!-- Shorten description, you can adjust length -->
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No proposals available.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 

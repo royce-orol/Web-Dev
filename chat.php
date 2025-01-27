@@ -49,8 +49,8 @@ $receiver_id = isset($_GET['receiver_id']) ? $_GET['receiver_id'] : (isset($user
 $messages = [];
 if ($receiver_id) {
     $message_query = "
-        SELECT * FROM chats 
-        WHERE (sender_id = $user_id AND receiver_id = $receiver_id) 
+        SELECT * FROM chats
+        WHERE (sender_id = $user_id AND receiver_id = $receiver_id)
            OR (sender_id = $receiver_id AND receiver_id = $user_id)
         ORDER BY created_at";
     $message_result = $conn->query($message_query);
@@ -90,25 +90,24 @@ if ($receiver_id) {
             display: flex;
             overflow-x: auto;
             border-bottom: 1px solid #ccc;
-            padding: 15px;
+            padding: 20px 20px;
             background-color: #f9f9f9;
-            border-radius: 8px; /* Rounded corners for the user list container */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for the user list */
         }
         .user-list ul {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
         .user-list li {
             flex: 0 0 auto;
-            padding: 12px 20px;
-            border-radius: 20px; /* Rounded corners for each user item */
+            padding: 8px 15px;
+            border-radius: 18px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for each user item */
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            position: relative;
         }
         .user-list li a {
             text-decoration: none;
@@ -117,59 +116,107 @@ if ($receiver_id) {
             display: block;
         }
         .user-list li:hover {
-            background-color: #f0f0f0; /* Subtle background change on hover */
-            transform: translateY(-5px); /* Slight lift effect on hover */
+            background-color: #eee;
+            transform: translateY(-2px);
         }
         .user-list li a[style*="font-weight: bold;"] {
             font-weight: bold;
-            color: #007bff; /* Highlight the active user in blue */
+            color: #007bff;
+        }
+        /* REMOVED UNREAD STYLING */
+        /*.user-list li.unread {
+            background-color: #ffcccc;
         }
         .user-list li.unread a {
-            color: #ff0000;
+            color: #800000;
             font-weight: bold;
-        }
+        }*/
+
+
         .chat-box {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 10px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 0 10px 10px 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
         }
         .messages {
             flex-grow: 1;
             overflow-y: auto;
             padding: 10px;
-            border-bottom: 1px solid #ccc;
-            max-height: 60vh;
-        }
-        .message-form {
-            padding: 15px;
+            border-bottom: 1px solid #eee;
+            max-height: 65vh;
             display: flex;
             flex-direction: column;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
+        }
+        .messages p {
+            padding: 20px 20px;
+            border-radius: 12px;
+            background-color: #f0f0f0;
+            margin-bottom: 8px;
+            align-self: flex-start;
+            position: relative;
+            font-size: 0.9em;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .messages p strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .messages p.sent {
+            background-color: #e8f0fe;
+            align-self: flex-end;
+            padding: 20px 20px;
+            font-size: 1.0em;
+        }
+
+        .messages p .timestamp {
+            position: absolute;
+            bottom: 2px;
+            right: 8px;
+            font-size: 0.75em;
+            color: #777;
+        }
+
+
+        .message-form {
+            padding: 10px;
+            display: flex;
+            background-color: transparent;
+            border-top: 1px solid #ddd;
+            align-items: center;
+            gap: 8px;
         }
         .message-form input {
             padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            width: 100%;
-            box-sizing: border-box;
+            border-radius: 18px;
+            margin-bottom: 0;
+            flex-grow: 1;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            height: 45px;
         }
         .message-form button {
-            padding: 12px 20px;
+            padding: 12px 22px;
             font-size: 16px;
             color: #fff;
             background-color: #007bff;
             border: none;
-            border-radius: 5px;
+            border-radius: 18px;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-weight: normal;
+            height: 45px;
         }
         .message-form button:hover {
             background-color: #0056b3;
@@ -187,10 +234,10 @@ if ($receiver_id) {
             <div class="user-list">
                 <ul>
                     <?php foreach ($users as $user): ?>
-                        <li class="<?= $receiver_id != $user['id'] && rand(0, 1) ? 'unread' : '' ?>">
-                            <a href="?receiver_id=<?= $user['id'] ?>" 
+                        <li class="<?= $receiver_id != $user['id'] && rand(0, 1) ? 'unread' : '' ?>"><!-- Removed unread class here for demo -->
+                            <a href="?receiver_id=<?= $user['id'] ?>"
                                style="<?= $receiver_id == $user['id'] ? 'font-weight: bold;' : '' ?>">
-                                <?= $user['first_name'] . ' ' . $user['last_name'] ?> 
+                                <?= $user['first_name'] . ' ' . $user['last_name'] ?>
                                 <span style="font-size: 12px; color: #666;">(<?= ucfirst($user['role']) ?>)</span>
                             </a>
                         </li>
@@ -200,16 +247,19 @@ if ($receiver_id) {
 
             <!-- Chat Box -->
             <div class="chat-box">
-                <div class="messages" id="chat-box">
+                <div class="messages" id="messages-container">
                     <?php if ($receiver_id): ?>
                         <?php foreach ($messages as $msg): ?>
-                            <p>
+                            <p class="<?= $msg['sender_id'] == $user_id ? 'sent' : 'received' ?>">
                                 <strong><?= $msg['sender_id'] == $user_id ? 'You' : 'User ' . $msg['sender_id'] ?>:</strong>
                                 <?= $msg['message'] ?>
+                                <span class="timestamp">
+                                    <?= date('h:i A', strtotime($msg['created_at'])) ?>
+                                </span>
                             </p>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <p>Select a user to start chatting.</p>
+                        <p style="text-align: center; color: #777;">Select a user to start chatting.</p>
                     <?php endif; ?>
                 </div>
 
@@ -223,5 +273,13 @@ if ($receiver_id) {
             </div>
         </div>
     </div>
+
+    <script>
+        // Scroll chat messages to the bottom on load
+        const messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
 </body>
 </html>

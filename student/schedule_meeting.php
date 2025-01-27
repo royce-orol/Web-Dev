@@ -1,35 +1,44 @@
 <?php
 session_start();
-include 'db_connection.php'; // Database connection
+include '../db_connection.php'; // Database connection
 
 // Check if user is logged in and has the 'student' role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit;
 }
+
+// Enable error reporting for debugging (remove in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Get logged-in student's ID
 $student_id = $_SESSION['user_id'];
 
+// Initialize success and error messages
+$success_message = '';
+$error_message = '';
+
 // Fetch the student's assigned supervisor ID and supervisor's email
 $supervisor_id = null;
 $supervisor_email = null;
-$query = "SELECT u.email FROM studsuper ss 
+$query = "SELECT u.email, ss.supervisor_id FROM studsuper ss
           JOIN users u ON ss.supervisor_id = u.id
           WHERE ss.student_id = ?";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $student_id);
     $stmt->execute();
-    $stmt->bind_result($supervisor_email);
+    $stmt->bind_result($supervisor_email, $supervisor_id_from_db);
     if ($stmt->fetch()) {
-        $supervisor_id = $stmt->insert_id; // Get the supervisor's ID if available
+        $supervisor_id = $supervisor_id_from_db; // Assign fetched supervisor_id
     }
     $stmt->close();
 }
 
 // Fetch all meetings associated with the student
 $meetings = [];
-$query = "SELECT meeting_id, meeting_date, meeting_time, status FROM meetings WHERE student_id = ? 
+$query = "SELECT meeting_id, meeting_date, meeting_time, status FROM meetings WHERE student_id = ?
           ORDER BY meeting_date DESC, meeting_time DESC";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $student_id);
@@ -44,19 +53,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     $meeting_date = $_POST['meeting_date'];
     $meeting_time = $_POST['meeting_time'];
 
-    // Insert new meeting request into the database with 'pending' status
-    $query = "INSERT INTO meetings (student_id, assigned_sv_id, meeting_date, meeting_time, status) 
-              VALUES (?, ?, ?, ?, 'pending')";
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param('iiss', $student_id, $supervisor_id, $meeting_date, $meeting_time);
-        $stmt->execute();
-        $stmt->close();
-        
-        // Reload the page to show the updated meeting schedule
-        header("Location: schedule_meeting.php");
-        exit;
+    // Combine date and time for comparison
+    $meeting_datetime_str = $meeting_date . ' ' . $meeting_time;
+    $meeting_timestamp = strtotime($meeting_datetime_str);
+    $current_timestamp = time();
+
+    if ($meeting_timestamp <= $current_timestamp) {
+        // --- ERROR CONDITION: Meeting time is in the past ---
+        $error_message = "You cannot schedule a meeting in the past. Please select a future date and time.";
+    } else {
+        // --- VALID MEETING TIME: Proceed to insert into database ---
+        $query = "INSERT INTO meetings (student_id, assigned_sv_id, meeting_date, meeting_time, status)
+                  VALUES (?, ?, ?, ?, 'pending')";
+        if ($stmt = $conn->prepare($query)) {
+            $stmt->bind_param('iiss', $student_id, $supervisor_id, $meeting_date, $meeting_time);
+            if ($stmt->execute()) {
+                // --- SUCCESS: Meeting request inserted ---
+                $success_message = "Meeting request submitted successfully.";
+            } else {
+                // --- ERROR: Database insertion failed ---
+                $error_message = "Failed to submit meeting request. Please try again.";
+            }
+            $stmt->close();
+
+            // Reload the page to show the updated meeting schedule and message
+            header("Location: schedule_meeting.php?message=" . urlencode($success_message) . "&error=" . urlencode($error_message));
+            exit;
+        } else {
+            // --- ERROR: Database prepare statement failed ---
+            $error_message = "Database error. Please try again later.";
+        }
     }
 }
+
+// Retrieve message from URL if set after form submission
+$success_message = isset($_GET['message']) ? $_GET['message'] : '';
+$error_message = isset($_GET['error']) ? $_GET['error'] : '';
+
 ?>
 
 <!DOCTYPE html>
@@ -65,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meeting Schedule</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/header.css">
     <style>
         table {
             width: 100%;
@@ -119,23 +152,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
             max-width: 1000px;
             overflow-x: auto;
         }
+        .success-message {
+            color: green;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <!-- Header and Sidebar -->
-    <header>
-        <nav>
-            <!-- Your navigation bar here -->
-        </nav>
-    </header>
+    <!-- Header -->
+    <?php include '../includes/header.php'; ?>
 
     <div class="dashboard-container">
-        <aside>
-            <!-- Your sidebar content here -->
-        </aside>
+        <!-- Sidebar -->
+        <?php include '../includes/sidebar.php'; ?>
 
         <div class="dashboard-main">
             <h1>Schedule a Meeting</h1>
+
+            <!-- --- ERROR MESSAGE DISPLAY --- -->
+            <?php if (!empty($error_message)): ?>
+                <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
+            <?php endif; ?>
+
+            <!-- --- SUCCESS MESSAGE DISPLAY --- -->
+            <?php if (!empty($success_message)): ?>
+                <p class="success-message"><?php echo htmlspecialchars($success_message); ?></p>
+            <?php endif; ?>
 
             <!-- Check if supervisor is assigned -->
             <?php if ($supervisor_email): ?>
@@ -186,8 +232,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
     </div>
 
     <!-- Footer -->
-    <footer>
-        <!-- Your footer content here -->
-    </footer>
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>
