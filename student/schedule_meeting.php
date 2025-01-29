@@ -23,9 +23,10 @@ $error_message = '';
 // Fetch the student's assigned supervisor ID and supervisor's email
 $supervisor_id = null;
 $supervisor_email = null;
-$query = "SELECT u.email, ss.supervisor_id FROM studsuper ss
-          JOIN users u ON ss.supervisor_id = u.id
-          WHERE ss.student_id = ?";
+$query = "SELECT u.email, p.assigned_sv AS supervisor_id
+          FROM proposal p
+          JOIN users u ON p.assigned_sv = u.id
+          WHERE p.sender_id = ?";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $student_id);
     $stmt->execute();
@@ -75,10 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
                 $error_message = "Failed to submit meeting request. Please try again.";
             }
             $stmt->close();
-
-            // Reload the page to show the updated meeting schedule and message
-            header("Location: schedule_meeting.php?message=" . urlencode($success_message) . "&error=" . urlencode($error_message));
-            exit;
         } else {
             // --- ERROR: Database prepare statement failed ---
             $error_message = "Database error. Please try again later.";
@@ -87,8 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $supervisor_id) {
 }
 
 // Retrieve message from URL if set after form submission
-$success_message = isset($_GET['message']) ? $_GET['message'] : '';
-$error_message = isset($_GET['error']) ? $_GET['error'] : '';
+$success_message = isset($_GET['message']) ? $_GET['message'] : $success_message;
+$error_message = isset($_GET['error']) ? $_GET['error'] : $error_message;
 
 ?>
 

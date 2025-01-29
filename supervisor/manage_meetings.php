@@ -70,123 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
     <title>Manage Meetings</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        /* Style for the meeting requests table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd; /* Lighter bottom border */
-        }
-        th {
-            background-color: #f4f4f4; /* Light grey header background */
-            color: #333;
-            font-weight: bold;
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9; /* Very light grey for even rows */
-        }
-        tbody tr:hover {
-            background-color: #e6e6e6; /* Light grey on hover */
-        }
-        td:last-child {
-            text-align: center; /* Center align action buttons */
-        }
-        .btn {
-            padding: 8px 12px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .btn-accept {
-            background-color: #4CAF50; /* Green for accept */
-            color: white;
-        }
-        .btn-reject {
-            background-color: #f44336; /* Red for reject */
-            color: white;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        .status {
-            font-weight: bold;
-            padding: 8px 12px;
-            border-radius: 5px;
-            display: inline-block; /* Make status behave like inline block */
-            text-align: center;
-            min-width: 70px; /* Ensure status text doesn't wrap too tightly */
-        }
-        .status-accepted {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .status-pending {
-            background-color: #fff3cd;
-            color: #85640a;
-            border: 1px solid #ffeeba;
-        }
-
-
-        /* Style for the "Add New Meeting" form - you can adjust as needed */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group select,
-        .form-group input[type="date"],
-        .form-group input[type="time"] {
-            width: calc(100% - 22px); /* Adjust width to account for padding and border */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Make padding and border part of the element's total width */
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        /* General form styling adjustments if needed */
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/manage_meetings.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -270,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
                     <select name="student_id" id="student_id" class="form-control">
                         <?php
                         // Fetch all students assigned to this supervisor from the proposal table
-                        $query = "SELECT u.id, u.first_name, u.last_name
+                        $query = "SELECT u.id,u.student_id,u.first_name, u.last_name
                                   FROM users u
                                   JOIN proposal p ON p.sender_id = u.id
                                   WHERE p.assigned_sv = ?";
@@ -279,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
                         $stmt->execute();
                         $result = $stmt->get_result();
                         while ($row = $result->fetch_assoc()) {
-                            echo "<option value='" . $row['id'] . "'>" . htmlspecialchars($row['first_name']) . " " . htmlspecialchars($row['last_name']) . "</option>";
+                            echo "<option value='" . $row['id'] . "'>" . htmlspecialchars($row['student_id']) . " " . htmlspecialchars($row['first_name']) ." ".  htmlspecialchars($row['last_name'])."</option>";
                         }
                         $stmt->close();
                         ?>

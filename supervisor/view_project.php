@@ -1,35 +1,38 @@
 <?php
 session_start();
 include '../db_connection.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Check if user is logged in and has student role (optional, but good practice)
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    // Redirect to login or appropriate page if not a logged-in student
+// Check if user is logged in and has supervisor role
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'supervisor') {
+    // Redirect to login or appropriate page if not a logged-in supervisor
     header("Location: ../login.php");
     exit;
 }
 
-// Get the logged-in student's user ID from the session
-$student_user_id = $_SESSION['user_id'];
+// Get the logged-in supervisor's user ID from the session
+$supervisor_user_id = $_SESSION['user_id'];
 
-// Fetch projects data for the logged-in student from proposal and presentation tables
+// Fetch projects data for the logged-in supervisor from proposal and presentation tables
 $query = "SELECT
             u.student_id AS student_id,
             p.proposal_id AS project_id,
             p.title AS project_title,
             p.status AS proposal_status,
             pr.date AS presentation_date,
-            u2.first_name AS supervisor_first_name,  -- Supervisor's first name
-            u2.last_name AS supervisor_last_name  -- Supervisor's last name
+            p.sender_id AS proposal_sender_id,
+            p.assigned_sv AS proposal_assigned_sv,
+            u2.student_id AS supervisor_staff_id  -- Fetch supervisor's staff_id
           FROM proposal p
           INNER JOIN users u ON p.sender_id = u.id
           LEFT JOIN presentation pr ON p.proposal_id = pr.proposal_id
           LEFT JOIN users u2 ON p.assigned_sv = u2.id  -- Join again to get supervisor info
-          WHERE p.sender_id = ?  -- Filter by sender_id (student user ID)
+          WHERE p.sender_id = ? OR p.assigned_sv = ?  -- Filter by sender_id or assigned_sv
           ORDER BY p.proposal_id DESC";
 
 $stmt = $conn->prepare($query);
-$stmt->bind_param("i", $student_user_id); // Bind the student's user ID to the query
+$stmt->bind_param("ii", $supervisor_user_id, $supervisor_user_id); // Bind the supervisor's user ID to the query
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -118,14 +121,14 @@ $stmt->close(); // Close the prepared statement
         <?php include '../includes/sidebar.php'; ?> <!-- Include sidebar -->
 
         <div class="dashboard-main">
-            <h1>Your Projects</h1> <!-- Changed heading to reflect it's user's projects -->
+            <h1>Projects Overview</h1> <!-- Heading updated to reflect supervisor's view -->
 
             <!-- Display projects in a table -->
             <table>
                 <thead>
                     <tr>
                         <th>Student ID</th>
-                        <th>Supervisor Name</th> <!-- Added Supervisor Name column -->
+                        <th>Supervisor ID</th>
                         <th>Project ID</th>
                         <th>Project Title</th>
                         <th>Proposal Status</th>
@@ -136,9 +139,12 @@ $stmt->close(); // Close the prepared statement
                     <?php if (!empty($projects)): ?>
                         <?php foreach ($projects as $project): ?>
                             <tr>
+                                <!-- Display Student ID -->
                                 <td><?php echo htmlspecialchars($project['student_id']); ?></td>
-                                <!-- Display Supervisor's Name -->
-                                <td><?php echo htmlspecialchars($project['supervisor_first_name']) . ' ' . htmlspecialchars($project['supervisor_last_name']); ?></td>
+
+                                <!-- Display Supervisor ID -->
+                                <td><?php echo htmlspecialchars($project['supervisor_staff_id']); ?></td>
+
                                 <td><?php echo htmlspecialchars($project['project_id']); ?></td>
                                 <td><?php echo htmlspecialchars($project['project_title']); ?></td>
                                 <td><?php echo htmlspecialchars($project['proposal_status']); ?></td>
@@ -153,7 +159,7 @@ $stmt->close(); // Close the prepared statement
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="no-data">No projects found for your account.</td> <!-- Updated no data message -->
+                            <td colspan="6" class="no-data">No projects assigned to you.</td> <!-- Updated no data message -->
                         </tr>
                     <?php endif; ?>
                 </tbody>

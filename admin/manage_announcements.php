@@ -1,11 +1,19 @@
 <?php
 session_start();
 include('../db_connection.php');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
+}
+
+// Ensure the uploads directory exists
+$upload_dir = "../uploads/";
+if (!is_dir($upload_dir)) {
+    mkdir($upload_dir, 0777, true);
 }
 
 // Initialize messages
@@ -17,10 +25,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Add announcement
     if (isset($_POST['add_announcement'])) {
         $description = htmlspecialchars(trim($_POST['description']));
+        $file_path = '';
+
+        // Handle file upload
+        if (!empty($_FILES['file']['name'])) {
+            $file_name = time() . "_" . preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $_FILES["file"]["name"]); // Sanitize file name
+            $target_file = $upload_dir . $file_name;
+
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+                $file_path = $file_name; // Store only the file name in DB
+            } else {
+                $error_message = "Error uploading file: " . $_FILES['file']['error'];
+            }
+        }
+
         if (!empty($description)) {
-            $stmt = $conn->prepare("INSERT INTO announcements (description) VALUES (?)");
+            $stmt = $conn->prepare("INSERT INTO Announcements (description, file_name) VALUES (?, ?)");
             if ($stmt) {
-                $stmt->bind_param("s", $description);
+                $stmt->bind_param("ss", $description, $file_path);
                 if ($stmt->execute()) {
                     $success_message = "Announcement added successfully!";
                 } else {
@@ -28,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $stmt->close();
             } else {
-                $error_message = "Error preparing statement: " . $conn->error;
+                $error_message = "Database error: " . $conn->error;
             }
         } else {
             $error_message = "Description cannot be empty!";
@@ -39,19 +61,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['edit_announcement'])) {
         $id = intval($_POST['id']);
         $description = htmlspecialchars(trim($_POST['description']));
-        if (!empty($description)) {
-            $stmt = $conn->prepare("UPDATE announcements SET description = ? WHERE id = ?");
-            if ($stmt) {
-                $stmt->bind_param("si", $description, $id);
-                if ($stmt->execute()) {
-                    $success_message = "Announcement updated successfully!";
-                } else {
-                    $error_message = "Error updating announcement: " . $stmt->error;
-                }
-                $stmt->close();
+        $file_path = '';
+
+        // Handle file upload
+        if (!empty($_FILES['file']['name'])) {
+            $file_name = time() . "_" . preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $_FILES["file"]["name"]); // Sanitize file name
+            $target_file = $upload_dir . $file_name;
+
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+                $file_path = $file_name;
             } else {
-                $error_message = "Error preparing statement: " . $conn->error;
+                $error_message = "Error uploading file: " . $_FILES['file']['error'];
             }
+        }
+
+        if (!empty($description)) {
+            if (!empty($file_path)) {
+                $stmt = $conn->prepare("UPDATE announcements SET description = ?, file_path = ? WHERE id = ?");
+                $stmt->bind_param("ssi", $description, $file_path, $id);
+            } else {
+                $stmt = $conn->prepare("UPDATE announcements SET description = ? WHERE id = ?");
+                $stmt->bind_param("si", $description, $id);
+            }
+
+            if ($stmt->execute()) {
+                $success_message = "Announcement updated successfully!";
+            } else {
+                $error_message = "Error updating announcement: " . $stmt->error;
+            }
+            $stmt->close();
         } else {
             $error_message = "Description cannot be empty!";
         }
@@ -87,160 +125,7 @@ $result = $conn->query("SELECT * FROM announcements ORDER BY id DESC");
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/forms.css">
-
-    <style>
-        .announcement-item {
-            margin-bottom: 10px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            background-color: #f9f9f9;
-        }
-
-        .announcement-item:hover {
-            background-color: #e9e9e9;
-        }
-
-        .announcement-item strong {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .button-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 8px 15px;
-            font-size: 14px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            border: none;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .announcement-form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .announcement-form h2 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .announcement-form textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            margin-bottom: 15px;
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .announcement-list {
-            margin-top: 30px;
-        }
-
-        .announcement-list h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        /* Edit Form Styling */
-        .edit-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .edit-form input, .edit-form textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .edit-form button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .edit-form button:hover {
-            background-color: #218838;
-        }
-
-        /* Modal Styling */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .modal-content button {
-            background-color: #dc3545;
-        }
-
-        .modal-content button:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/announcement.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -252,17 +137,18 @@ $result = $conn->query("SELECT * FROM announcements ORDER BY id DESC");
             <h1>Manage Announcements</h1>
 
             <!-- Display success or error message -->
-            <?php if (!empty($success_message)): ?>
+            <?php if (!empty($error_message)): ?>
+                <div class="message error-message"><strong>Error:</strong> <?php echo htmlspecialchars($error_message); ?></div>
+            <?php elseif (!empty($success_message)): ?>
                 <div class="message success-message"><?php echo htmlspecialchars($success_message); ?></div>
-            <?php elseif (!empty($error_message)): ?>
-                <div class="message error-message"><?php echo htmlspecialchars($error_message); ?></div>
             <?php endif; ?>
 
             <!-- Add Announcement Form -->
             <section class="announcement-form">
                 <h2>Add Announcement</h2>
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     <textarea name="description" rows="4" placeholder="Enter your announcement..." required></textarea>
+                    <input type="file" name="file">
                     <button type="submit" name="add_announcement" class="btn btn-primary">Add Announcement</button>
                 </form>
             </section>
@@ -278,6 +164,9 @@ $result = $conn->query("SELECT * FROM announcements ORDER BY id DESC");
                             <?php while ($row = $result->fetch_assoc()): ?>
                                 <li class="announcement-item">
                                     <?php echo htmlspecialchars($row['description']); ?>
+                                    <?php if (!empty($row['file_path'])): ?>
+                                        <a href="../uploads/<?php echo htmlspecialchars($row['file_path']); ?>" target="_blank">Download File</a>
+                                    <?php endif; ?>
                                     <div class="button-container">
                                         <!-- Edit Button triggers modal -->
                                         <button type="button" class="btn btn-primary" onclick="openEditModal(<?php echo $row['id']; ?>, '<?php echo htmlspecialchars($row['description']); ?>')">Edit</button>
@@ -302,9 +191,10 @@ $result = $conn->query("SELECT * FROM announcements ORDER BY id DESC");
     <div id="editModal" class="modal-overlay">
         <div class="modal-content">
             <h3>Edit Announcement</h3>
-            <form id="editForm" method="POST" class="edit-form">
+            <form id="editForm" method="POST" class="edit-form" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="editId">
                 <textarea name="description" id="editDescription" rows="4" required></textarea>
+                <input type="file" name="file">
                 <button type="submit" name="edit_announcement" class="btn btn-primary">Save Changes</button>
                 <button type="button" class="btn btn-danger" onclick="closeEditModal()">Cancel</button>
             </form>
@@ -312,14 +202,12 @@ $result = $conn->query("SELECT * FROM announcements ORDER BY id DESC");
     </div>
 
     <script>
-        // Function to open the edit modal with pre-filled data
         function openEditModal(id, description) {
             document.getElementById('editId').value = id;
             document.getElementById('editDescription').value = description;
             document.getElementById('editModal').style.display = 'flex';
         }
 
-        // Function to close the edit modal
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
         }

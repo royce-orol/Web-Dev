@@ -14,7 +14,7 @@ $role = $_SESSION['role']; // student, moderator, admin, supervisor
 
 // Retrieve announcements from the database
 $announcements = [];
-$query = "SELECT description FROM Announcements ORDER BY id DESC";
+$query = "SELECT description, file_name FROM Announcements ORDER BY id DESC";
 $result = $conn->query($query);
 
 if ($result && $result->num_rows > 0) {
@@ -33,7 +33,6 @@ if ($result && $result->num_rows > 0) {
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/footer.css">
-
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
@@ -52,6 +51,10 @@ if ($result && $result->num_rows > 0) {
                 <?php foreach ($announcements as $announcement): ?>
                     <div class="announcement">
                         <p><?php echo htmlspecialchars($announcement['description']); ?></p>
+                        <?php if (!empty($announcement['file_name'])): ?>
+                         <p><a href="uploads/<?php echo htmlspecialchars($announcement['file_name']); ?>" download><?php echo htmlspecialchars($announcement['file_name']); ?></a></p>
+
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

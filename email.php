@@ -23,28 +23,8 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
     <title>Email List</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/header.css">
-    <style>
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+    <link rel="stylesheet" href="css/email.css">
+    
 </head>
 <body>
     <?php include 'includes/header.php'; ?>

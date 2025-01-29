@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("ssssss", $first_name, $last_name, $email, $student_id, $hashed_password, $role);
             
             if ($stmt->execute()) {
-                $success_message = "Admin added successfully!";
+                $success_message = "Supervisor added successfully!";
             } else {
                 $error_message = "Error adding admin: " . $stmt->error;
             }

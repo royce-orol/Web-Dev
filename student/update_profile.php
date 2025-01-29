@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success_message = "Profile updated successfully.";
 
         // Re-fetch updated user details
-        $query = "SELECT email, CONCAT(first_name, ' ', last_name) AS username, student_id FROM users WHERE id = ?";
+        $query = "SELECT email, CONCAT(first_name, ' ', last_name) , role AS username, student_id, role FROM users WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
@@ -64,85 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profile</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        .dashboard-main {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    <link rel="stylesheet" href="../css/update_profile.css">
 
-        .dashboard-main h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
 
-        .dashboard-main .profile-info {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #eef;
-            border-radius: 8px;
-        }
-
-        .dashboard-main .profile-info p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-
-        .dashboard-main form {
-            max-height: 0; /* Start with zero height */
-            overflow: hidden; /* Prevent content overflow */
-            transform: scaleY(0); /* Start with zero scale */
-            transform-origin: top; /* Set the origin for scaling to the top */
-            transition: max-height 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth transition */
-        }
-
-        .dashboard-main form.show {
-            max-height: 500px; /* Adjust to fit the form content */
-            transform: scaleY(1); /* Scale the form to full size */
-        }
-
-        .dashboard-main label {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .dashboard-main input {
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        .dashboard-main button {
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-            background-color: wheat;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .dashboard-main button:hover {
-            background-color: #0056b3;
-        }
-
-        .success-message {
-            color: green;
-            font-weight: bold;
-        }
-
-        .error-message {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
     <script>
         function toggleForm() {
             const form = document.getElementById('profile-form');
@@ -170,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($user_details['email']); ?></p>
                 <p><strong>Username:</strong> <?php echo htmlspecialchars($user_details['username']); ?></p>
-                <p><strong>Student ID:</strong> <?php echo htmlspecialchars($user_details['student_id']); ?></p>
+                <p><strong><?php echo ($user_details['role'] === 'student') ? 'Student ID' : 'Staff ID'; ?>:</strong> 
+                <?php echo htmlspecialchars($user_details['student_id']); ?></p>
             </div>
 
             <button onclick="toggleForm()">Edit Profile</button>
