@@ -41,57 +41,9 @@ if ($result->num_rows > 0) {
     <title>View Proposals</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        /* Tile container styling */
-        .proposals-container {
-            display: flex;
-            flex-wrap: wrap; /* Allow tiles to wrap to the next line */
-            justify-content: flex-start; /* Align tiles to the start */
-            gap: 20px; /* Spacing between tiles */
-            margin-top: 20px;
-        }
+    <link rel="stylesheet" href="../css/proposal.css">
 
-        /* Individual proposal tile styling */
-        .proposal-tile {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            width: calc(33% - 20px); /* Adjust width for 3 tiles per row with gap */
-            min-width: 300px; /* Minimum width for each tile */
-            box-sizing: border-box; /* Include padding and border in width */
-        }
 
-        .proposal-tile h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .proposal-tile p {
-            margin: 5px 0;
-            color: #555;
-            font-size: 0.9em;
-        }
-
-        .proposal-tile p strong {
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* Responsive adjustments for tile layout */
-        @media (max-width: 1000px) {
-            .proposal-tile {
-                width: calc(50% - 20px); /* 2 tiles per row on medium screens */
-            }
-        }
-
-        @media (max-width: 700px) {
-            .proposal-tile {
-                width: 100%; /* 1 tile per row on small screens */
-            }
-        }
-    </style>
 </head>
 <body>
     <?php include '../includes/header.php'; ?>

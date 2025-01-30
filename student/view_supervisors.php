@@ -18,55 +18,8 @@ $result = $conn->query($sql);
     <title>View Supervisors</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-        }
-
-        tr:hover {
-            background-color: #f4f4f4;
-        }
-
-        td {
-            font-size: 16px;
-        }
-
-        .no-data {
-            text-align: center;
-            color: #888;
-            font-style: italic;
-        }
-
-        .dashboard-main {
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/view_supervisors.css">
+   
 </head>
 <body>
     <?php include '../includes/header.php'; ?>

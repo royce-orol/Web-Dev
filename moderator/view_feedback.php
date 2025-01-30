@@ -32,50 +32,9 @@ if ($result) {
     <title>View Feedback</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        .feedback-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
+    <link rel="stylesheet" href="../css/feedback.css">
 
-        .feedback-tile {
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            padding: 15px;
-            width: 300px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .feedback-tile:hover {
-            transform: translateY(-5px);
-        }
-
-        .feedback-header {
-            font-weight: bold;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .feedback-message {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .feedback-date {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #888;
-        }
-
-        .feedback-table {
-            display: none; /* Hide the original table */
-        }
-    </style>
+   
 </head>
 <body>
     <?php include '../includes/header.php'; ?>

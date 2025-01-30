@@ -22,63 +22,9 @@ $profile_picture = $_SESSION['profile_picture'] ?? '/WebDevAsgn/images/defaultpr
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYP Management System</title>
     <link rel="stylesheet" href="/WebDevAsgn/css/header.css">
-    <style>
-        /* Navbar styling */
-        .navbar {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: wheat;
-            color: black; /* Updated text color for readability */
-            justify-content: space-between;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-        }
+    <link rel="stylesheet" href="/WebDevAsgn/css/navbar.css">
 
-        /* Profile and welcome message container */
-        .profile-welcome {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Profile picture */
-        .profile-picture {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .welcome-message p {
-            margin: 0;
-            font-size: 18px;
-            color: black;
-        }
-
-        /* Navbar button images */
-        .navbar-icons img, .logout-button img {
-            width: 20px;
-            height: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Magnify animation on hover */
-        .navbar-icons a:hover img, .logout-button a:hover img {
-            transform: scale(1.2);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Search input field */
-        .search-input {
-            display: none;
-            margin-left: 10px;
-            padding: 5px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            outline: none;
-            transition: border 0.3s ease;
-        }
-    </style>
+   
 </head>
 <body>
     <div class="navbar">

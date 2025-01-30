@@ -58,61 +58,9 @@ $stmt->close(); // Close the prepared statement
     <title>View Projects</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet" href="../css/view_projects_sp.css">
 
-        .dashboard-container {
-            display: flex;
-            flex-direction: row;
-            margin: 0;
-        }
-
-        .dashboard-main {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        td {
-            color: #333;
-        }
-
-        .no-data {
-            text-align: center;
-            font-style: italic;
-        }
-    </style>
+    
 </head>
 <body>
     <?php include '../includes/header.php'; ?> <!-- Include header -->

@@ -73,32 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - FYP Management System</title>
     <link rel="stylesheet" href="css/register.css">
-    <style>
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #f44336;
-            /* Red background */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-            font-size: 14px;
-            text-align: center;
-            z-index: 1000;
-            opacity: 1;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .notification.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-    </style>
+    <link rel="stylesheet" href="css/register2.css">
+    
 </head>
 
 <body>

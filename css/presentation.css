@@ -1,0 +1,50 @@
+.message-container {
+    margin-bottom: 20px;
+}
+.success-message {
+    color: green;
+    background-color: #e6ffe6; /* Light green background */
+    padding: 10px;
+    border: 1px solid green;
+    border-radius: 5px;
+}
+.error-message {
+    color: red;
+    background-color: #ffe6e6; /* Light red background */
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 5px;
+}
+.presentation-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+.presentation-form input[type="date"],
+.presentation-form input[type="time"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* To include padding and border in width */
+}
+.presentation-form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.presentation-form button:hover {
+    background-color: #0056b3;
+}
+.no-proposal-message {
+    font-style: italic;
+    color: #777;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}

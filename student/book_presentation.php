@@ -71,58 +71,9 @@ $proposal = $result->fetch_assoc();
     <title>Book Presentation</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        .message-container {
-            margin-bottom: 20px;
-        }
-        .success-message {
-            color: green;
-            background-color: #e6ffe6; /* Light green background */
-            padding: 10px;
-            border: 1px solid green;
-            border-radius: 5px;
-        }
-        .error-message {
-            color: red;
-            background-color: #ffe6e6; /* Light red background */
-            padding: 10px;
-            border: 1px solid red;
-            border-radius: 5px;
-        }
-        .presentation-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        .presentation-form input[type="date"],
-        .presentation-form input[type="time"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* To include padding and border in width */
-        }
-        .presentation-form button {
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .presentation-form button:hover {
-            background-color: #0056b3;
-        }
-        .no-proposal-message {
-            font-style: italic;
-            color: #777;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/presentation.css">
+
+    
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -143,7 +94,7 @@ $proposal = $result->fetch_assoc();
 
             <?php if ($proposal): ?>
                 <form action="book_presentation.php" method="POST" class="presentation-form">
-                    <p><strong>Proposal:</strong> <?= htmlspecialchars($proposal['title']); ?></p>
+                    <p><strong>Project:</strong> <?= htmlspecialchars($proposal['title']); ?></p>
                     <input type="hidden" name="proposal_id" value="<?= htmlspecialchars($proposal['proposal_id']); ?>">
 
                     <label for="date">Select Date:</label>

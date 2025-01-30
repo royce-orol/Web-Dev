@@ -1,0 +1,74 @@
+/* Adjust form field sizes */
+.form-container input,
+.form-container textarea {
+    width: 300px;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-container select {
+    width: 300px;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-container button {
+    width: 300px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #45a049;
+}
+
+/* Small message for student ID status */
+.small-message {
+    color: #f00;
+    font-size: 12px;
+}
+
+/* Modal style */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.modal p {
+    margin: 0;
+    padding: 0;
+}
+
+.modal .close {
+    text-align: right;
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal .close:hover {
+    color: #000;
+}
+
+/* Question mark icon */
+.question-icon {
+    color: #007bff;
+    font-size: 20px;
+    cursor: pointer;
+}

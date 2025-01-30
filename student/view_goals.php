@@ -49,71 +49,10 @@ $result = $stmt->get_result();
     <title>Your Goals</title>
     <!-- Link to the dashboard's CSS file -->
     <link rel="stylesheet" href="../css/dashboard.css">
-    <!-- Link to the header's CSS file -->
     <link rel="stylesheet" href="../css/header.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet" href="../css/view_goals.css">
 
-        .dashboard-container {
-            display: flex;
-            flex-direction: row;
-            margin: 0;
-        }
-
-        .dashboard-main {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        td {
-            color: #333;
-        }
-
-        .no-data {
-            text-align: center;
-            font-style: italic;
-        }
-
-        input[type="checkbox"] {
-            cursor: pointer;
-        }
-    </style>
+    
 </head>
 <body>
     <!-- Include the header file for navigation -->
