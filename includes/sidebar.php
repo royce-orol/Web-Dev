@@ -43,6 +43,8 @@
             <li><a href="/WebDevAsgn/student/view_marks.php">View Marks</a></li>
             <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/chat.php">Chat</a></li>
+            <li><a href="/WebDevAsgn/meettheteam.php">Meet the Developers</a></li>
+
         <?php elseif ($_SESSION['role'] === 'moderator'): ?>
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Profile</a></li>
@@ -50,6 +52,8 @@
             <li><a href="/WebDevAsgn/moderator/view_proposals.php">View Proposals</a></li>
             <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/chat.php">Chat</a></li>
+            <li><a href="/WebDevAsgn/meettheteam.php">Meet the Developers</a></li>
+
         <?php elseif ($_SESSION['role'] === 'supervisor'): ?>
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Profile</a></li>
@@ -60,6 +64,8 @@
             <li><a href="/WebDevAsgn/supervisor/create_goals.php">Create Goals</a></li>
             <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/chat.php">Chat</a></li>
+            <li><a href="/WebDevAsgn/meettheteam.php">Meet the Developers</a></li>
+
         <?php elseif ($_SESSION['role'] === 'admin'): ?>
             <li><a href="/WebDevAsgn/dashboard.php">Home</a></li>
             <li><a href="/WebDevAsgn/student/update_profile.php">Profile</a></li>
@@ -72,6 +78,8 @@
             <li><a href="/WebDevAsgn/admin/add_supervisor.php">Add Supervisor</a></li>
             <li><a href="/WebDevAsgn/email.php">Email Others</a></li>
             <li><a href="/WebDevAsgn/chat.php">Chat</a></li>
+            <li><a href="/WebDevAsgn/meettheteam.php">Meet the Developers</a></li>
+
 
         <?php endif; ?>
     </ul>
