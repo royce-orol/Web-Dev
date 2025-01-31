@@ -150,5 +150,8 @@ if ($receiver_id) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     </script>
+
+    <?php include 'includes/footer.php'; ?>
+
 </body>
 </html>

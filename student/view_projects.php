@@ -108,6 +108,7 @@ $stmt->close(); // Close the prepared statement
         </div>
     </div>
 
-    <?php include '../footer.php'; ?> <!-- Include footer -->
+    <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>

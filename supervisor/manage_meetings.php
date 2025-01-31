@@ -184,5 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_meeting_date']) &
             </form>
         </div>
     </div>
+
+    <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>

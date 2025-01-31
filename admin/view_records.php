@@ -271,5 +271,8 @@ if ($result && $result->num_rows > 0) {
             </table>
         </div>
     </div>
+
+    <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>

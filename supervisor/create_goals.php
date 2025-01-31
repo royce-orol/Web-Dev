@@ -149,5 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.getElementById('noStudentsModal').style.display = 'none';
         }
     </script>
+
+    <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>
